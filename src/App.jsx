@@ -22,6 +22,7 @@ function App() {
         <Routes>
             <Route path='/admin' element={<AdminDashboard />}>
               <Route path='formulario_estudiante' element={<FormEstudiante />} />
+              <Route path='formulario_estudiante/:id' element={<FormEstudiante />} />
               <Route path='estudiantes' element={<Estudiantes />}/>
               <Route path='materias' element={<Materias />} />
               <Route path='peticiones' element={<Peticiones />} />

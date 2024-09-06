@@ -53,10 +53,12 @@ export default function Solicitar() {
                     <p>Se deja constancia de que, a la fecha, 
                     <input type="text" name="nombre" id="" value={formData.nombre} onChange={handleInput} placeholder="Apellido y Nombre"
                     className="rounded border-2 border-blue-200 mx-1 focus:border-blue-600 focus:outline-none"
+                    autoComplete="off"
                     maxLength={30}
                     />
                      DNI<input type="text" name="dni" id="" value={formData.dni} onChange={handleInput} placeholder="DNI"
                      className="rounded border-2 border-blue-200 mx-1 focus:border-blue-600 focus:outline-none"
+                     autoComplete="off"
                      maxLength={8}
                      minLength={8}
                      />
@@ -71,20 +73,24 @@ export default function Solicitar() {
                     A pedido del interesado/a y para ser presentada ante quien corresponda, se extiende en la ciudad de 
                     <input type="text" name="ciudad" id="" value={formData.ciudad} onChange={handleInput} placeholder="Ciudad"
                     className="rounded border-2 border-blue-200 mx-1 focus:border-blue-600 focus:outline-none"
+                    autoComplete="off"
                     maxLength={30}
                     />a los 
                     <input type="text" name="dia" id="" value={formData.dia} onChange={handleInput} placeholder="Dia"
                     className="rounded border-2 border-blue-200 mx-1 focus:border-blue-600 focus:outline-none"
+                    autoComplete="off"
                     maxLength={2}
                     minLength={1}
                     />días del mes
                     <input type="text" name="mes" id="" value={formData.mes} onChange={handleInput} placeholder="Mes"
                     className="rounded border-2 border-blue-200 mx-1 focus:border-blue-600 focus:outline-none"
+                    autoComplete="off"
                     maxLength={2}
                     minLength={1}
                     />de 
                     <input type="text" name="anio" id="" value={formData.anio} onChange={handleInput} placeholder="Año"
                     className="rounded border-2 border-blue-200 mx-1 focus:border-blue-600 focus:outline-none"
+                    autoComplete="off"
                     maxLength={2}
                     minLength={1}
                     />año.

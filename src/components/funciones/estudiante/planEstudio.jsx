@@ -3,7 +3,7 @@ import React from "react";
 
 export default function PlanEstudio() {
   return (
-    <div className="justify-center text-center">
+    <div className="justify-center text-center bg-sky-50">
       <div className="m-5">
         <h2>Centro Regional Universitario de Ituzaingó</h2>
         <h2>Instituto Superior de Formación Técnica Municipal “Leopoldo Marechal”</h2>

@@ -35,14 +35,14 @@ export const itemsAlumno=[
     },
     {
         id:2,
-        nom:"Materias",
-        url:"materias",
-        icon:<ion-icon name="school"></ion-icon>,
+        nom:"Solicitar",
+        url:"solicitar",
+        icon:<ion-icon name="mail"></ion-icon>,
     },
     {
         id:3,
-        nom:'Solicitar',
-        url:"solicitar",
-        icon:<ion-icon name="mail"></ion-icon>,
+        nom:'Materias',
+        url:"materias",
+        icon:<ion-icon name="school"></ion-icon>,
     }
 ]

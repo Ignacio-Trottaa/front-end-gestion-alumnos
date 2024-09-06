@@ -1,6 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import { estudiantes } from '../js/estudiantes.js';
+import { Route } from "react-router-dom";
 
 export default function Estudiantes() {
     return (
@@ -15,6 +16,7 @@ export default function Estudiantes() {
                     <th className="p-2">Localidad</th>
                     <th className="p-2">Correo Electronico</th>
                     <th className="p-2">Estado</th>
+                    <th className="p-2"></th>
                 </thead>
                 <tbody className="text-center">{
                     estudiantes.map((estudiante) => (
@@ -27,6 +29,7 @@ export default function Estudiantes() {
                             <td className="bg-slate-200">{estudiante.localidad}</td>
                             <td className="bg-slate-200">{estudiante.correoElectronico}</td>
                             <td className="bg-slate-200">{estudiante.estado}</td>
+                            <td className="bg-slate-200"><a href={`/admin/formulario_estudiante/${estudiante.id}`}><i className="hover:text-blue-500"><ion-icon name="create"></ion-icon></i></a></td>
                         </tr>
                     ))
                 }
