@@ -199,8 +199,8 @@ const handleSubmit = (e) => {
         <div className="bg-blue-100 p-10">
         <form action="" method="post" className="" onSubmit={handleSubmit}>
             <div className="w-full">
-                <div className="p-4 pt-0 w-full">
-                    <button className="bg-blue-400 w-8 rounded-tl-lg rounded-bl-lg p-1">
+                <div className="p-4 pt-0 w-full flex">
+                    <button className="bg-blue-400 w-8 rounded-tl-lg rounded-bl-lg p-1 hover:bg-blue-500">
                         <ion-icon name="search"></ion-icon>
                     </button>
                     <input
@@ -481,7 +481,7 @@ const handleSubmit = (e) => {
                 />
                 <div className="flex">
                 <label className="m-2">Año de egreso</label>
-                {error.anio_egreso && <p className="text-red-600 m-2">El anio de egreso es requerido</p>}
+                {error.anio_egreso && <p className="text-red-600 m-2">El año de egreso es requerido</p>}
                 </div>
                 <input
                     type="text"
