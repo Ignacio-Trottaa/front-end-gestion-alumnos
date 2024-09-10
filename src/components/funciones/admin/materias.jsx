@@ -7,6 +7,7 @@ export default function Materias() {
             <h1 className="p-2 bg-[#0670B7] text-white">Grilla de horarios - Desarrollo de Software 2°AÑO</h1>
             <div className="flex justify-center text-center m-3">
                 <table className="border-black border bg-white">
+                    <thead>
                     <tr className="border-black border">
                     <td></td>
                     <td className="border-black border">LUNES</td>
@@ -15,6 +16,8 @@ export default function Materias() {
                     <td className="border-black border">JUEVES</td>
                     <td className="border-black border">VIERNES</td>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td className="border-black border">18:00 - 19:00</td>
                         <td className="" rowSpan={3} >Desarrollo de Sistemas <br /> Orientados a Objetos</td>
@@ -43,6 +46,7 @@ export default function Materias() {
                         <td className="border-black border-x border-b">Cristina Arancibia</td>
                         <td className="border-black border-x border-b">Sergio Bonavento <br /> Guido</td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

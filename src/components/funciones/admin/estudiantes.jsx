@@ -8,15 +8,17 @@ export default function Estudiantes() {
         <div className="p-5">
             <table className="w-full">
                 <thead className="text-center text-white bg-blue-500">
-                    <th className="p-2">N°</th>
-                    <th className="p-2">Apellidos y Nombres</th>
-                    <th className="p-2">DNI</th>
-                    <th className="p-2">Curso</th>
-                    <th className="p-2">Telefono</th>
-                    <th className="p-2">Localidad</th>
-                    <th className="p-2">Correo Electronico</th>
-                    <th className="p-2">Estado</th>
-                    <th className="p-2"></th>
+                    <tr>
+                        <th className="p-2">N°</th>
+                        <th className="p-2">Apellidos y Nombres</th>
+                        <th className="p-2">DNI</th>
+                        <th className="p-2">Curso</th>
+                        <th className="p-2">Telefono</th>
+                        <th className="p-2">Localidad</th>
+                        <th className="p-2">Correo Electronico</th>
+                        <th className="p-2">Estado</th>
+                        <th className="p-2"></th>
+                    </tr>
                 </thead>
                 <tbody className="text-center">{
                     estudiantes.map((estudiante) => (
