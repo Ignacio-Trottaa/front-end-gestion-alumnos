@@ -152,17 +152,17 @@ const validarHorario = (e) => {
 function validarCampo(campo) {
     return campo.trim() !== '';
 }
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validar cada campo
     const newErrors = {};
     Object.keys(formData).forEach(field => {
         if (!validarCampo(formData[field])) {
-            newErrors[field] = true;
+            newErrors[field] = true;//encontro errores
         } else {
-            newErrors[field] = false;
-        }
+            newErrors[field] = false;//no encontro errores
+        }        
     });
 
     // Actualizar el estado de errores
@@ -170,31 +170,80 @@ const handleSubmit = (e) => {
 
     // Si no hay errores, puedes proceder con el envío del formulario
     if (Object.values(newErrors).every(val => !val)) {
-        console.log("Formulario enviado exitosamente");
-    }
-};
+        try {
+            const response = await fetch(`/api/estudiantes/${id}`, {
+                method: id ? 'PUT' : 'POST', // Usa POST para crear, PUT para actualizar
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData), // Convierte formData a JSON
+            });
 
+            if (response.ok) {
+                console.log("Datos enviados exitosamente");
+                // Aquí puedes manejar lo que sucede después del envío, por ejemplo, redirigir o mostrar un mensaje
+            } else {
+                console.error("Error al enviar los datos");
+            }
+        } catch (error) {
+            console.error("Error al enviar los datos a la API", error);
+        }}
+};
 
     let {id}=useParams();
     //HACER UNA CONSULTA PARA AGARRAR LOS DATOS DEL ALUMNO ATRAVES DEL ID 
-/*
-    const [estudiante , setEstudiante]=useState("");
+
+    const [estudiante, setEstudiante] = useState({});
 
     useEffect(() => {
-        // Aquí puedes hacer una solicitud para obtener los datos del estudiante por su ID
-        // y luego actualizar el estado con esos datos.
-        // Por ejemplo, podrías hacer una solicitud HTTP para obtener los datos:
-        // fetch(`/api/estudiantes/${id}`)
-        //     .then(response => response.json())
-        //     .then(data => setEstudiante(data));
-
-        // De momento, se puede establecer un valor simulado:
-        const numero=2;
-        setEstudiante({
-            iden: numero,
-        });
+        const fetchEstudiante = async () => {
+            try {
+                // Solicitud para obtener datos del estudiante por ID
+                const response = await fetch(`/api/estudiantes/${id}`);
+                const data = await response.json();
+                setEstudiante(data);
+    
+                // Actualiza el formulario con los datos del estudiante
+                setFormData({
+                    nombre: data.nombre || "",
+                    apellido: data.apellido || "",
+                    dni: data.dni || "",
+                    fecha_nac: data.fecha_nac || "",
+                    lugar_nac: data.lugar_nac || "",
+                    estado_civil: data.estado_civil || "",
+                    cant_hijos: data.cant_hijos || "",
+                    familiares_acargo: data.familiares_acargo || "",
+                    direccion: data.direccion || "",
+                    numero: data.numero || "",
+                    piso: data.piso || "",
+                    depto: data.depto || "",
+                    localidad: data.localidad || "",
+                    partido: data.partido || "",
+                    codigo_postal: data.codigo_postal || "",
+                    tel_personal: data.tel_personal || "",
+                    correo_electronico: data.correo_electronico || "",
+                    titulo: data.titulo || "",
+                    anio_egreso: data.anio_egreso || "",
+                    institucion: data.institucion || "",
+                    distrito: data.distrito || "",
+                    otros_estudios: data.otros_estudios || "",
+                    trabaja: data.trabaja || "",
+                    actividad: data.actividad || "",
+                    horario_inicio: data.horario_inicio || "",
+                    horario_fin: data.horario_fin || "",
+                    obra_social: data.obra_social || "",
+                    nombre_obra: data.nombre_obra || ""
+                });
+            } catch (error) {
+                console.error("Error al obtener los datos del estudiante", error);
+            }
+        };
+    
+        if (id) {
+            fetchEstudiante();
+        }
     }, [id]);
-*/
+
     return (
         <div className="bg-blue-100 p-10">
         <form action="" method="post" className="" onSubmit={handleSubmit}>
