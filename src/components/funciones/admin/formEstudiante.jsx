@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams , Link , useNavigate} from "react-router-dom";
 import React,{ useEffect ,useState } from "react";
-import { handleTrabaja, handleObra } from "../js/formEstudiante";
+import EstudianteService from "../../../services/estudianteServices.js";
 
 export default function FormEstudiante() {
 
+    const navigate = useNavigate();
     const [formData,setFormData]= useState({
         nombre:"",
         apellido:"",
@@ -27,12 +28,13 @@ export default function FormEstudiante() {
         institucion:"",
         distrito:"",
         otros_estudios:"",
-        trabaja:"",
+        trabaja: "",
         actividad:"",
         horario_inicio:"",
         horario_fin:"",
-        obra_social:"",
+        obra_social: "",
         nombre_obra:"",
+        estado_estudiante:"true"
     });
     const [error, setError] = useState({
         nombre: false,
@@ -72,7 +74,6 @@ export default function FormEstudiante() {
             "direccion",
             "localidad",
             "partido",
-            "correo_electronico",
             "titulo",
             "institucion",
             "distrito",
@@ -107,7 +108,17 @@ export default function FormEstudiante() {
             }else{
                 console.log("Fecha invalida");
             }
-        }                
+        }else if(name==="trabaja" || name==="obra_social"){
+            setFormData({
+                ...formData,
+                [name]: value
+            })
+        }else if(name==="correo_electronico"){
+            setFormData({
+                ...formData,
+                [name]: value
+            })
+        }            
     }
     
     function validarFecha(fecha) {
@@ -125,20 +136,17 @@ export default function FormEstudiante() {
     }
     
 const validarHorario = (e) => {
+    const newErrors = {};
     const { name, value } = e.target;
-    // Permitir solo la validación si hay 5 caracteres (horario completo)
     if (value.length === 5) {
         if (/^(?:[01]\d|2[0-3]):[0-5]\d$|^24:00$/.test(value)) {
             setFormData({
                 ...formData,
-                [name]: value
+                [name]: value+":00"
             });
+            newErrors[name] = false;
         } else {
-            alert("Horario invalido o debe de ser en formato 'HH:MM'");
-            setFormData({
-                ...formData,
-                [name]: ""
-            });
+            newErrors[name] = true;
         }
     } else {
         // Actualiza el estado si el valor no está completo todavia.
@@ -147,6 +155,7 @@ const validarHorario = (e) => {
             [name]: value
         });
     }
+    setError(newErrors);
 }
 
 function validarCampo(campo) {
@@ -154,7 +163,7 @@ function validarCampo(campo) {
 }
 const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(formData);
     // Validar cada campo
     const newErrors = {};
     Object.keys(formData).forEach(field => {
@@ -171,7 +180,8 @@ const handleSubmit = async (e) => {
     // Si no hay errores, puedes proceder con el envío del formulario
     if (Object.values(newErrors).every(val => !val)) {
         try {
-            const response = await fetch(`/api/estudiantes/${id}`, {
+            console.log("Enviando datos a la API...");
+            const response = await fetch(`/api/alumnos/${id}`, {
                 method: id ? 'PUT' : 'POST', // Usa POST para crear, PUT para actualizar
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,6 +192,7 @@ const handleSubmit = async (e) => {
             if (response.ok) {
                 console.log("Datos enviados exitosamente");
                 // Aquí puedes manejar lo que sucede después del envío, por ejemplo, redirigir o mostrar un mensaje
+                altaEstudiante();
             } else {
                 console.error("Error al enviar los datos");
             }
@@ -190,60 +201,69 @@ const handleSubmit = async (e) => {
         }}
 };
 
-    let {id}=useParams();
+    const {id}=useParams();
     //HACER UNA CONSULTA PARA AGARRAR LOS DATOS DEL ALUMNO ATRAVES DEL ID 
-
-    const [estudiante, setEstudiante] = useState({});
-
     useEffect(() => {
-        const fetchEstudiante = async () => {
-            try {
-                // Solicitud para obtener datos del estudiante por ID
-                const response = await fetch(`/api/estudiantes/${id}`);
-                const data = await response.json();
-                setEstudiante(data);
-    
-                // Actualiza el formulario con los datos del estudiante
-                setFormData({
-                    nombre: data.nombre || "",
-                    apellido: data.apellido || "",
-                    dni: data.dni || "",
-                    fecha_nac: data.fecha_nac || "",
-                    lugar_nac: data.lugar_nac || "",
-                    estado_civil: data.estado_civil || "",
-                    cant_hijos: data.cant_hijos || "",
-                    familiares_acargo: data.familiares_acargo || "",
-                    direccion: data.direccion || "",
-                    numero: data.numero || "",
-                    piso: data.piso || "",
-                    depto: data.depto || "",
-                    localidad: data.localidad || "",
-                    partido: data.partido || "",
-                    codigo_postal: data.codigo_postal || "",
-                    tel_personal: data.tel_personal || "",
-                    correo_electronico: data.correo_electronico || "",
-                    titulo: data.titulo || "",
-                    anio_egreso: data.anio_egreso || "",
-                    institucion: data.institucion || "",
-                    distrito: data.distrito || "",
-                    otros_estudios: data.otros_estudios || "",
-                    trabaja: data.trabaja || "",
-                    actividad: data.actividad || "",
-                    horario_inicio: data.horario_inicio || "",
-                    horario_fin: data.horario_fin || "",
-                    obra_social: data.obra_social || "",
-                    nombre_obra: data.nombre_obra || ""
-                });
-            } catch (error) {
-                console.error("Error al obtener los datos del estudiante", error);
-            }
-        };
-    
-        if (id) {
-            fetchEstudiante();
+        if(id){
+            EstudianteService.getEstudianteById(id).then((response)=>{
+                setFormData(response.data);
+            }).catch(error=>{
+                console.log(error)
+            })
+        }else{
+            setFormData({
+                nombre: "",
+                apellido: "",
+                dni: "",
+                fecha_nac: "",
+                lugar_nac: "",
+                estado_civil: "",
+                cant_hijos: "",
+                familiares_acargo: "",
+                direccion: "",
+                numero: "",
+                piso: "",
+                depto: "",
+                localidad: "",
+                partido: "",
+                codigo_postal: "",
+                tel_personal: "",
+                correo_electronico: "",
+                titulo: "",
+                anio_egreso: "",
+                institucion: "",
+                distrito: "",
+                otros_estudios: "",
+                trabaja: "false",
+                actividad: "",
+                horario_inicio: "",
+                horario_fin: "",
+                obra_social: "false",
+                nombre_obra: "",
+                estado_estudiante: "true"
+            });
         }
-    }, [id]);
-
+    },[id]);
+    //llamadad a la api
+    const altaEstudiante = (e) =>{
+        e.preventDefault();
+        EstudianteService.AltaEstudiante(formData).then(response=>{
+            console.log(response.data);
+            navigate("/admin");
+        }).catch(error=>{
+            console.log(error);
+        })
+    }
+    //llamadad a la api
+    const modificarEstudiante = (e) =>{
+        e.preventDefault();
+        EstudianteService.updateEstudiante(id,formData).then(response=>{
+            console.log(response.data);
+            navigate("/admin/estudiantes");
+        }).catch(error=>{
+            console.log(error);
+        })
+    }
     return (
         <div className="bg-blue-100 p-10">
         <form action="" method="post" className="" onSubmit={handleSubmit}>
@@ -259,7 +279,6 @@ const handleSubmit = async (e) => {
                         autoComplete="off"
                         className="w-[95%] pl-3 p-1 rounded-tr-lg rounded-br-lg focus:outline-none"
                         placeholder="Buscar DNI"
-                        value={id}
                         maxLength={8}
                     />
                 </div>
@@ -598,9 +617,9 @@ const handleSubmit = async (e) => {
                     id="siTrabaja"
                     name="trabaja"
                     autoComplete="off"
-                    onClick={handleTrabaja}
                     className="mr-4"
-                    value={formData.trabaja}
+                    value="true"
+                    onChange={handleInput}
                 />
                 <label className="m-2">No</label>
                 <input 
@@ -608,9 +627,9 @@ const handleSubmit = async (e) => {
                     id="noTrabaja"
                     name="trabaja"
                     autoComplete="off"
-                    onClick={handleTrabaja}
                     className=""
-                    value={formData.trabaja}
+                    value="false"
+                    onChange={handleInput}
                 /><br />
                 <div className="" id="datosLaborales">
                     <div className="flex">
@@ -631,7 +650,7 @@ const handleSubmit = async (e) => {
                     <h2 className="text-lg">Horario Habitual</h2>
                     <div className="flex">
                     <label className="m-2">Inicio de Horario</label>
-                    {error.horario_inicio && <p className="text-red-600 m-2">El horario es requerido</p>}
+                    {error.horario_inicio && <p className="text-red-600 m-2">Horario invalido o no posee el formato HH:MM:SS</p>}
                     </div>
                    <input
                         type="text"
@@ -646,7 +665,7 @@ const handleSubmit = async (e) => {
                     />
                     <div className="flex">
                     <label className="m-2">Fin de Horario</label>
-                    {error.horario_fin && <p className="text-red-600 m-2">El horario es requerido</p>}
+                    {error.horario_fin && <p className="text-red-600 m-2">Horario invalido o no posee el formato HH:MM:SS</p>}
                     </div>
                     <input
                         type="text"
@@ -669,9 +688,9 @@ const handleSubmit = async (e) => {
                         id="siObraSocial"
                         name="obra_social"
                         autoComplete="off"
-                        onClick={handleObra}
                         className="mr-4"
-                        value={formData.obra_social}
+                        value="true"
+                        onChange={handleInput}
                     />
                     <label className="m-2">No</label>
                     <input 
@@ -679,9 +698,9 @@ const handleSubmit = async (e) => {
                         id="noObraSocial"
                         name="obra_social"
                         autoComplete="off"
-                        onClick={handleObra}
                         className=""
-                        value={formData.obra_social}
+                        onChange={handleInput}
+                        value="false"
                     /><br />
                     <div className="" id="obraSocial">
                         <div className="flex">
@@ -702,8 +721,17 @@ const handleSubmit = async (e) => {
                     </div>
                 </div>
                 <br />
-                    <input type="submit" value="Eliminar" className="bg-red-500 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-600" />
-                    <input type="submit" value="Registrar" className="bg-green-500 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-600" />
+                {
+                    id ?(
+                        <div>    
+                            <input type="submit" value="Actualizar" onClick={(e)=> modificarEstudiante(e)} className="bg-blue-500 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-600" />
+                            <input type="submit" value="Dar de baja" className="bg-red-500 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-600" />  
+                        </div>
+                    ):(
+                        <input type="submit" value="Registrar" onClick={(e)=> altaEstudiante(e)} className="bg-green-500 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-600" />
+                    )
+                }
+                    
                 </div>
             </form>
         </div>
