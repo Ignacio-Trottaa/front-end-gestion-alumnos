@@ -20,7 +20,8 @@ function App() {
   return (
     <BrowserRouter>
         <Routes>
-            <Route path='/admin' element={<AdminDashboard />}>
+            <Route path='/' element={<Login />} />            
+            <Route path='/admin' element={ <AdminDashboard />}>
               <Route path='formulario_estudiante' element={<FormEstudiante />} />
               <Route path='formulario_estudiante/:id' element={<FormEstudiante />} />
               <Route path='estudiantes' element={<Estudiantes />}/>
