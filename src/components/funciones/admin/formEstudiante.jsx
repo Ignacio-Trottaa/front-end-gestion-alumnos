@@ -268,7 +268,7 @@ export default function FormEstudiante() {
     //llamadad a la api
     const bajaEstudiante = (e) => {
         e.preventDefault();
-        EstudianteService.bajaEstudiante(id, formData).then(response => {
+        EstudianteService.deleteEstudiante(id, formData).then(response => {
             console.log(response.data);
             navigate("/admin/estudiantes");
         }).catch(error => {

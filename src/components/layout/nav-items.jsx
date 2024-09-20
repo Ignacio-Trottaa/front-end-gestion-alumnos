@@ -1,4 +1,3 @@
-
 export const ItemsAdmin=[
     {
         id:1,
@@ -8,18 +7,24 @@ export const ItemsAdmin=[
     },
     {
         id:2,
+        nom:'Formulario profesor',
+        url:'formulario_profesores',
+        icon:<ion-icon name="person-add"></ion-icon>,
+    },
+    {
+        id:3,
         nom:'Estudiantes',
         url:'estudiantes',
         icon:<ion-icon name="people"></ion-icon>,
     },
     {
-        id:3,
+        id:4,
         nom:'Materias',
         url:'materias',
         icon:<ion-icon name="school"></ion-icon>,
     },
     {
-        id:4,
+        id:5,
         nom:'Peticiones',
         url:'peticiones',
         icon: <ion-icon name="mail"></ion-icon>,

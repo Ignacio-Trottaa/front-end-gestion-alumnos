@@ -3,187 +3,136 @@ import React from "react";
 
 export default function PlanEstudio() {
   return (
-    <div className="justify-center text-center bg-sky-50">
-      <div className="m-5">
-        <h2>Centro Regional Universitario de Ituzaingó</h2>
-        <h2>Instituto Superior de Formación Técnica Municipal “Leopoldo Marechal”</h2>
-        <h3>Tecnicatura Superior en Desarrollo de Software</h3>
+    <div className="p-5">
+      <div className="flex justify-center">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-5">
+          <a href="/PROGRAMA_TEC_SUP_EN_DESARROLLO_DE_SOFTWARE.pdf"
+            download="PROGRAMA TEC.SUP.EN DESARROLLO DE SOFTWARE.pdf">
+            Descargar plan de estudio
+          </a>
+        </button>
       </div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-5">
-        <a href="/PROGRAMA_TEC_SUP_EN_DESARROLLO_DE_SOFTWARE.pdf"
-          download="PROGRAMA TEC.SUP.EN DESARROLLO DE SOFTWARE.pdf">
-          Descargar plan de estudio
-        </a>
-      </button>
-      <div className="m-5">
-      <h1>PROGRAMA 1°AÑO</h1>
-      <table className="flex justify-center text-left">
-        <tbody>
-          <tr>
-            <td><strong>Campo General</strong></td>
-            <td><strong>Horas</strong></td>
+      <table className="w-full border border-black">
+        <thead>
+          <tr className="text-center font-bold border border-black bg-blue-400">
+            <th colSpan={8}>1° AÑO</th>
           </tr>
           <tr>
-            <td>Análisis Matemático</td>
-            <td>64 Hs.</td>
+            <th className="border px-2 py-1 border-black bg-white">Campo General</th>
+            <th colSpan={2} className="border px-2 py-1 border-black bg-white">Campo Técnico Específico</th>
+            <th colSpan={4} className="border px-2 py-1 border-black bg-white">Campo del fundamento</th>
+            <th className="border px-2 py-1 border-black bg-white">Campo de la Práctica</th>
+          </tr>
+        </thead>
+        <tbody className="border-black  bg-white">
+          <tr>
+            <td className="border px-2 py-1 text-center border-black">Análisis Matemático</td>
+            <td className="border px-2 py-1 text-center border-black">Administración y gestión de base de datos</td>
+            <td className="border px-2 py-1 text-center border-black">Introducción a la programación</td>
+            <td className="border px-2 py-1 text-center border-black">Introducción a las redes de datos</td>
+            <td className="border px-2 py-1 text-center border-black">Sistemas Digitales</td>
+            <td className='border px-2 py-1 text-center border-black'>Sistemas Operativos</td>
+            <td className='border px-2 py-1 text-center border-black'>Laboratorio de Hardware</td>
+            <td className='border px-2 py-1 text-center border-black'>Prácticas Profesionalizantes I</td>
           </tr>
           <tr>
-            <td><strong>Campo Técnico Específico</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td className="pr-2">Administración y gestión de base de datos</td>
-            <td>96 Hs.</td>
-          </tr>
-          <tr>
-            <td>Introducción a la programación</td>
-            <td>96 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo del Fundamento</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Introducción a las redes de datos</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td>Sistemas Digitales</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td>Sistemas operativos</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td>Laboratorio de Hardware</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo de la Práctica</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Prácticas Profesionalizantes I</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>TOTAL HORAS:</strong></td>
-            <td>576 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">96 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">96 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
           </tr>
         </tbody>
+        <tfoot className=' bg-white'>
+          <tr>
+            <td colSpan={8} className="border px-2 py-1 text-center font-bold border-black">TOTAL HORAS: 576 HS.</td>
+          </tr>
+        </tfoot>
       </table>
-      </div>
-      <div className="m-5">
-      <h1>PROGRAMA 2°AÑO</h1>
-      <table className="flex justify-center text-left">
-        <tbody>
-          <tr>
-            <td><strong>Campo General</strong></td>
-            <td><strong>Horas</strong></td>
+
+      <table className="w-full border border-black mt-2">
+        <thead>
+          <tr className="text-center font-bold border border-black bg-blue-400">
+            <th colSpan={8}>2° AÑO</th>
           </tr>
           <tr>
-            <td>Inglés</td>
-            <td>64 Hs.</td>
+            <th colSpan={3} className="border px-2 py-1 border-black bg-white">Campo General</th>
+            <th colSpan={3} className="border px-2 py-1 border-black bg-white">Campo Técnico Específico</th>
+            <th className="border px-2 py-1 border-black bg-white">Campo del fundamento</th>
+            <th className="border px-2 py-1 border-black bg-white">Campo de la Práctica</th>
+          </tr>
+        </thead>
+        <tbody className="border-black  bg-white">
+          <tr>
+            <td className="border px-2 py-1 text-center border-black">Inglés I  </td>
+            <td className="border px-2 py-1 text-center border-black">Desarrollo de aplicativos móviles</td>
+            <td className="border px-2 py-1 text-center border-black">Algebra y lógica</td>
+            <td className="border px-2 py-1 text-center border-black">Programación</td>
+            <td className="border px-2 py-1 text-center border-black">Diseño Web</td>
+            <td className='border px-2 py-1 text-center border-black'>Estadística y Probabilidades</td>
+            <td className='border px-2 py-1 text-center border-black'>Desarrollo de sistemas Orientado a Objetos</td>
+            <td className='border px-2 py-1 text-center border-black'>Prácticas Profesionalizantes II</td>
           </tr>
           <tr>
-            <td>Desarrollo de aplicativos móviles</td>
-            <td>96 Hs.</td>
-          </tr>
-          <tr>
-            <td>Algebra y Lógica</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo del Fundamento</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Programación</td>
-            <td>96 Hs.</td>
-          </tr>
-          <tr>
-            <td>Diseño web</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td>Estadística y Probabilidades</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo Técnico Específico</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td className="pr-2">Desarrollo de sistemas orientados a objetos</td>
-            <td>128 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo de la Práctica</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Prácticas Profesionalizantes II</td>
-            <td>96 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>TOTAL HORAS:</strong></td>
-            <td>672 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">96 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">96 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">128 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">96 Hs.</td>
           </tr>
         </tbody>
+        <tfoot className=' bg-white'>
+          <tr>
+            <td colSpan={8} className="border px-2 py-1 text-center font-bold border-black">TOTAL HORAS: 672 HS.</td>
+          </tr>
+        </tfoot>
       </table>
-      </div>
-      <div className="m-5">
-      <h1>PROGRAMA 3°AÑO</h1>
-      <table className="flex justify-center text-left">
-        <tbody>
-          <tr>
-            <td><strong>Campo General</strong></td>
-            <td><strong>Horas</strong></td>
+
+      <table className="w-full border border-black mt-2">
+        <thead>
+          <tr className="text-center font-bold border border-black bg-blue-400">
+            <th colSpan={8}>3° AÑO</th>
           </tr>
           <tr>
-            <td>Inglés II</td>
-            <td>64 Hs.</td>
+            <th colSpan={2} className="border px-2 py-1 border-black bg-white">Campo General</th>
+            <th colSpan={3} className="border px-2 py-1 border-black bg-white">Campo Técnico Específico</th>
+            <th className="border px-2 py-1 border-black bg-white">Campo de la Práctica</th>
+          </tr>
+        </thead>
+        <tbody className="border-black  bg-white">
+          <tr>
+            <td className="border px-2 py-1 text-center border-black">Inglés II</td>
+            <td className="border px-2 py-1 text-center border-black">Gestión de Proyectos</td>
+            <td className="border px-2 py-1 text-center border-black">Desarrollo de sistemas Web</td>
+            <td className="border px-2 py-1 text-center border-black">Ingeniería de Software</td>
+            <td className="border px-2 py-1 text-center border-black">Metodología de pruebas de sistemas</td>
+            <td className='border px-2 py-1 text-center border-black'>Prácticas Profesionalizantes III</td>
           </tr>
           <tr>
-            <td>Gestión de Proyectos</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo Técnico Específico</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Desarrollo de Sistemas Web</td>
-            <td>128 Hs.</td>
-          </tr>
-          <tr>
-            <td>Ingeniería de Software</td>
-            <td>128 Hs.</td>
-          </tr>
-          <tr>
-            <td className="pr-12">Metodologia de pruebas de sistemas</td>
-            <td>64 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>Campo de la Práctica</strong></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Prácticas Profesionalizantes III</td>
-            <td>128 Hs.</td>
-          </tr>
-          <tr>
-            <td><strong>TOTAL HORAS:</strong></td>
-            <td>576 Hs.</td>
-          </tr>
-          <tr>
-            <td colSpan={2} className="text-right"><strong>TOTAL DE HORAS DEL PLAN : 1824 HS.</strong></td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">128 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">128 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">64 Hs.</td>
+            <td className="border px-2 py-1 text-center border-black">128 Hs.</td>
           </tr>
         </tbody>
+        <tfoot className=' bg-white'>
+          <tr>
+            <td colSpan={8} className="border px-2 py-1 text-center font-bold border-black">TOTAL HORAS: 576 HS.</td>
+          </tr>
+          <tr>
+            <td colSpan={8} className="border px-2 py-1 text-center font-bold border-black">TOTAL HORAS DEL PLAN: 1824 HS.</td>
+          </tr>
+        </tfoot>
       </table>
-      </div>
     </div>
   );
 }
