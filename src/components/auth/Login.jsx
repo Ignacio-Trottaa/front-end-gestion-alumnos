@@ -1,6 +1,30 @@
-import React from 'react';
-
+import React, {useState} from 'react';
+import { Link , useNavigate} from 'react-router-dom';
 const Login = () => {
+  const navigate = useNavigate();
+  const [InicioData, setInicioData] = useState({
+    usuario: '',
+    password: ''
+  });
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setInicioData({
+      ...InicioData,
+      [name]: value
+    });
+  }
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    if(InicioData.usuario === "admin" && InicioData.password === "admin"){
+      navigate("/admin");
+    }
+    if(InicioData.usuario === "profesor" && InicioData.password === "profesor"){
+      navigate("/profesor")
+    }
+    if(InicioData.usuario === "estudiante" && InicioData.password === "estudiante"){
+      navigate("/estudiante")
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="bg-blue-600 p-4">
@@ -11,7 +35,7 @@ const Login = () => {
           <div className="md:w-1/2 p-8">
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Inicia Sesión</h2>
             
-            <form className="space-y-6" onSubmit="">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Usuario</label>
                 <input  
@@ -22,6 +46,7 @@ const Login = () => {
                 required
                 className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-600 focus:outline-none"
                 placeholder="Usuario"
+                onChange={handleInput}
                 />
               </div>
               <div>
@@ -34,6 +59,7 @@ const Login = () => {
                   required
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-600 focus:outline-none"
                   placeholder="********"
+                  onChange={handleInput}
                 />
               </div>
               <div className="flex items-center justify-between">

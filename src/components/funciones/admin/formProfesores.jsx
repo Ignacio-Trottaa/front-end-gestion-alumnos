@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import EstudianteService from "../../../services/estudianteServices.js";
+import { useNavigate , useParams } from "react-router-dom";
+import ProfesorService from "../../../services/profesoresServices";
 
 export default function FormProfesor(){
+    const navigate = useNavigate();
     const [formDataProfesor,setFormDataProfesor]=useState({
         nombre: "",
         apellido: "",
@@ -34,8 +36,8 @@ export default function FormProfesor(){
                 })
             }
         }else if(name==="email"){
-            setFormData({
-                ...formData,
+            setFormDataProfesor({
+                ...formDataProfesor,
                 [name]: value.toLowerCase()
             })
         }else if(name==="materia"){
@@ -49,10 +51,9 @@ export default function FormProfesor(){
         return campo.trim() !== '';
     }
     const altaProfesor = async () => {
-        /*
         try {
             let response;
-                response = await EstudianteService.AltaEstudiante(formData);
+                response = await ProfesorService.saveProfesor(formDataProfesor);
 
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
@@ -64,9 +65,17 @@ export default function FormProfesor(){
                 console.error("Error al enviar los datos");
             }
         } catch (error) {
-            console.error("Error al enviar los datos a la API", error);
-        }*/
-       console.log(formDataProfesor)
+            if (error.response) {
+                // El servidor respondió con un código de estado fuera del rango 2xx
+                console.error("Error en la respuesta de la API:", error.response.data);
+            } else if (error.request) {
+                // La petición fue hecha pero no hubo respuesta
+                console.error("No se recibió respuesta del servidor", error.request);
+            } else {
+                // Algo pasó al configurar la petición que detonó un error
+                console.error("Error al enviar los datos a la API", error.message);
+            }
+        }
     };
     const handleSubmit = (e) => {
         e.preventDefault();

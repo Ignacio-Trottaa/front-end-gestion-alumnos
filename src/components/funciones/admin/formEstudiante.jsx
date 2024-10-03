@@ -2,12 +2,12 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import EstudianteService from "../../../services/estudianteServices.js";
 export default function FormEstudiante() {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [dniInput, setDniInput] = useState({
         dni:""
     });
     const [existDni, setExistDni] = useState(false);
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
@@ -166,18 +166,13 @@ export default function FormEstudiante() {
         try {
             let response;
             if (id) {
-                // Si hay un ID, actualizamos al estudiante
                 response = await EstudianteService.updateEstudiante(id, formData);
             } else {
-                // Si no hay ID, damos de alta a un nuevo estudiante
                 response = await EstudianteService.AltaEstudiante(formData);
             }
-
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
-                console.log(response.data); // Maneja la respuesta si es necesario
-
-                // Redirige después de un envío exitoso
+                console.log(response.data); 
                 navigate("/admin/formulario_estudiante");
             } else {
                 console.error("Error al enviar los datos");
@@ -258,12 +253,12 @@ export default function FormEstudiante() {
     //llamadad a la api
     const modificarEstudiante = (e) => {
         e.preventDefault();
-        EstudianteService.updateEstudiante(id, formData).then(response => {
-            console.log(response.data);
-            navigate("/admin/estudiantes");
-        }).catch(error => {
-            console.log(error);
-        })
+            EstudianteService.updateEstudiante(id, formData).then(response => {
+                console.log(response.data);
+                navigate("/admin/estudiantes");
+            }).catch(error => {
+                console.log(error);
+            })
     }
     //llamadad a la api
     const bajaEstudiante = (e) => {
@@ -275,10 +270,14 @@ export default function FormEstudiante() {
             console.log(error);
         })
     }
+    {/*ARREGLAR BUSQUEDA POR DNI */}
     const buscarPorDNI = () => {
         if (dniInput.dni.length === 8) {
             EstudianteService.findAlumnoByDNI(dniInput.dni).then((response) => {
                 setFormData(response.data);
+                console.log(formData);  
+                console.log(response.data);
+                console.log(response.data.id);
                 setExistDni(true);
             }).catch(error => {
                 setExistDni(false);
@@ -766,12 +765,25 @@ export default function FormEstudiante() {
                         (id || existDni) ? (
                             <div className="flex">
                                 <input type="submit" value="Actualizar" onClick={(e) => modificarEstudiante(e)} className="w-[50%] bg-blue-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-500" />
-                                <input type="submit" value="Dar de baja" onClick={(e) => {
-                                    if (window.confirm("¿Estás seguro de que deseas dar de baja a este estudiante?")) {
-                                        bajaEstudiante(e);
-                                    }
-                                }}
-                                    className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500" />
+                                {
+                                    (formData.estado_estudiante===true) ?(
+                                        <input type="submit" value="Dar de baja" onClick={(e) => {
+                                            if (window.confirm("¿Estás seguro de que deseas dar de baja a este estudiante?")) {
+                                                bajaEstudiante(e);
+                                            }
+                                        }}
+                                            className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500" />
+                                    ):(
+                                        <input type="submit" value="Reintegrar Estudiante" onClick={(e) => {
+                                            if (window.confirm("¿Estás seguro de que reintegrar a este estudiante?")) {
+                                                {/*reintegraEstudiante(e); */}
+                                                console.log("reintegra");
+                                            }
+                                        }}
+                                            className="w-[50%] bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" />
+                                    )
+                                }
+                                
                             </div>
                         ) : (
                             <input type="submit" value="Registrar" className="w-full bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" />
