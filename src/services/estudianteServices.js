@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const ESTUDIANTE_BASE_REST_API_URL = "http://localhost:8080/api";
+const ESTUDIANTE_BASE_REST_API_URL = "http://ec2-3-231-25-252.compute-1.amazonaws.com:80/api";
 
 class EstudianteService {
     getAllEstudiantes() {
