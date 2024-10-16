@@ -18,8 +18,8 @@ class EstudianteService {
     deleteEstudiante(id) {
         return axios.put(ESTUDIANTE_BASE_REST_API_URL + "/alumno/estado/" + id);
     }
-    findAlumnoByDNI(dni){
-        return axios.get(ESTUDIANTE_BASE_REST_API_URL+"/alumno/dni/"+dni);
+    findAlumnoByDNI(dni) {
+        return axios.get(ESTUDIANTE_BASE_REST_API_URL + "/alumno/dni/" + dni);
     }
 }
 
