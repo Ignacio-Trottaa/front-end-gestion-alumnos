@@ -48,7 +48,7 @@ export default function IAsideBar({ closeSidebar }) {
         <div className="w-72 h-full bg-[#0670B7] text-[#ecf0f1] fixed top-0 right-0 flex flex-col shadow-[2px_0_5px_rgba(0, 0, 0, 0.1)]">
             <div className="flex-grow overflow-y-auto">
                 <div className="flex p-3">
-                    <h2>IA Sidebar</h2>
+                    <h2>ChatBOT</h2>
                     <button onClick={closeSidebar} className="text-white bg-red-500 p-1 rounded ml-auto">
                         <i><ion-icon name="close"></ion-icon></i>
                     </button>
@@ -73,7 +73,7 @@ export default function IAsideBar({ closeSidebar }) {
                     id="pregunta"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Consultale algo a la IA"
+                    placeholder="Habla con ChatBot"
                     autoComplete="off"
                     className="p-2 w-full rounded text-black outline-none border-2 border-blue-200 focus:border-blue-600 resize-none"
                 />

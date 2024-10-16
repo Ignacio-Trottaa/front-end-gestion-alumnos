@@ -19,12 +19,18 @@ export const ItemsAdmin=[
     },
     {
         id:4,
+        nom:'Profesores',
+        url:'profesores',
+        icon:<ion-icon name="people"></ion-icon>
+    },
+    {
+        id:5,
         nom:'Materias',
         url:'materias',
         icon:<ion-icon name="school"></ion-icon>,
     },
     {
-        id:5,
+        id:6,
         nom:'Peticiones',
         url:'peticiones',
         icon: <ion-icon name="mail"></ion-icon>,

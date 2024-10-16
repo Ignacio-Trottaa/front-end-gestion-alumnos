@@ -12,6 +12,7 @@ export default function Estudiantes() {
     useEffect(() => {
         EstudianteService.getAllEstudiantes().then(response => {
             setEstudiantes(response.data);
+            console.log(response.data);
             setFilteredEstudiantes(response.data); // Inicialmente mostrar todos
             setLoading(false);
         }).catch(error => {
@@ -90,19 +91,19 @@ export default function Estudiantes() {
                         {filteredEstudiantes.length > 0 ? (
                             filteredEstudiantes.map((estudiante) => (
                                 <tr key={estudiante.id}>
-                                    <td className={`text-white ${estudiante.estado_estudiante === false ? "bg-blue-300" : "bg-blue-500"}`}>{estudiante.id}</td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
+                                    <td className={`text-white ${estudiante.estadoEstudiante === false ? "bg-blue-300" : "bg-blue-500"}`}>{estudiante.id}</td>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
                                         {estudiante.apellido} {estudiante.nombre}
                                     </td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.dni}</td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>Desarrollador</td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.tel_personal}</td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.localidad}</td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.correo_electronico}</td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
-                                        {estudiante.estado_estudiante ? "Activo" : "Inactivo"}
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.dni}</td>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>Desarrollador</td>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.telefonoPersonal}</td>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.localidad}</td>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>{estudiante.correoElectronico}</td>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
+                                        {estudiante.estadoEstudiante ? "Activo" : "Inactivo"}
                                     </td>
-                                    <td className={`${estudiante.estado_estudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
+                                    <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
                                         <a href={`/admin/formulario_estudiante/${estudiante.id}`}>
                                             <i className="hover:text-blue-500">
                                                 <ion-icon name="create"></ion-icon>

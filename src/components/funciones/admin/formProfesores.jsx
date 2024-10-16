@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate , useParams } from "react-router-dom";
 import ProfesorService from "../../../services/profesoresServices";
+import Alert from '@mui/material/Alert';
 
 export default function FormProfesor(){
+    const { id } = useParams();
+    const [alta,setAlta] = useState(false);
     const navigate = useNavigate();
     const [formDataProfesor,setFormDataProfesor]=useState({
         nombre: "",
         apellido: "",
-        email: "",
+        dni:"",
+        correoElectronico: "",
         telefono: "",
-        materia: ""
+        materia: "",
+        estadoProfesor:"true"
     });
 
     const [error,setError]=useState({
         nombre:false,
         apellido:false,
-        email:false,
+        dni:false,
+        correoElectronico:false,
         telefono:false,
         materia:false
     });
@@ -28,14 +34,14 @@ export default function FormProfesor(){
                     [name]: value
                 })   
             }
-        }else if(name==="telefono"){
+        }else if(name==="telefono" || name==="dni"){
             if(/^\d*$/.test(value)){
                 setFormDataProfesor({
                     ...formDataProfesor,
                     [name]: value
                 })
             }
-        }else if(name==="email"){
+        }else if(name==="correoElectronico"){
             setFormDataProfesor({
                 ...formDataProfesor,
                 [name]: value.toLowerCase()
@@ -50,30 +56,58 @@ export default function FormProfesor(){
     function validarCampo(campo) {
         return campo.trim() !== '';
     }
+    function viewAlta(){
+        const button = document.getElementById('buttonRegistro');
+        setAlta(true);
+        button.disabled=true;
+        setTimeout(() => {
+            setAlta(false);
+            setFormDataProfesor({
+                nombre:"",
+                apellido:"",
+                dni:"",
+                correoElectronico: "",
+                telefono: "",
+                materia: "",
+                estadoProfesor:"true"
+            })
+            button.disabled=false; 
+        }, 3000);
+        setTimeout(() => {
+            navigate("/admin/formulario_profesores");
+        }, 3000);
+    }
     const altaProfesor = async () => {
         try {
             let response;
                 response = await ProfesorService.saveProfesor(formDataProfesor);
-
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
                 console.log(response.data); // Maneja la respuesta si es necesario
-                console.log(formDataProfesor)
-                // Redirige después de un envío exitoso
-                navigate("/admin/formulario_profesores");
+                viewAlta()
             } else {
                 console.error("Error al enviar los datos");
             }
         } catch (error) {
             if (error.response) {
-                // El servidor respondió con un código de estado fuera del rango 2xx
-                console.error("Error en la respuesta de la API:", error.response.data);
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
             } else if (error.request) {
-                // La petición fue hecha pero no hubo respuesta
-                console.error("No se recibió respuesta del servidor", error.request);
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
             } else {
-                // Algo pasó al configurar la petición que detonó un error
-                console.error("Error al enviar los datos a la API", error.message);
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
             }
         }
     };
@@ -101,11 +135,88 @@ export default function FormProfesor(){
             altaProfesor(); // Llamamos a la función altaEstudiante aquí
         }
     };
+
+    useEffect(()=>{
+        if(id){
+            ProfesorService.findProfesor(id).then((response)=>{
+                setFormDataProfesor(response.data);
+            }).catch(error=>{
+                console.log(error);
+            })
+        }else{
+            setFormDataProfesor({
+                nombre: "",
+                apellido: "",
+                dni:"",
+                correoElectronico: "",
+                telefono: "",
+                materia: "",
+                estadoProfesor:"true"
+            })
+        }
+    },[id]);
     
+    const modificarProfesor = (e) => {
+        e.preventDefault();
+            ProfesorService.updateProfesor(id,formDataProfesor).then(response =>{
+                console.log(response.data);
+                navigate("/admin/profesores");
+            }).catch(error=>{
+                if (error.response) {
+                    navigate("/Error",{state : {
+                           codigo: error.response.status,
+                           error: error.response.data.error,
+                           mensaje: error.message
+                    }});
+                } else if (error.request) {
+                    const requestErrorMsg = "No se recibió respuesta del servidor";
+                    navigate("/Error", {state : {
+                        codigo : 500,
+                        error: "Error al intentar acceder al servidor",
+                        mensaje: requestErrorMsg
+                    }});
+                } else {
+                    navigate("/Error", {state : {
+                        codigo: 0,
+                        error: "Ocurrio un inconveniente",
+                        mensaje: ""
+                    }})
+                }
+            })
+    }
+    const bajaProfesor = (e) =>{
+        e.preventDefault();
+            ProfesorService.deleteProfesor(id,formDataProfesor).then(response =>{
+                console.log(response.data);
+                navigate("/admin/profesores");
+            }).catch(error=>{
+                if (error.response) {
+                    navigate("/Error",{state : {
+                           codigo: error.response.status,
+                           error: error.response.data.error,
+                           mensaje: error.message
+                    }});
+                } else if (error.request) {
+                    const requestErrorMsg = "No se recibió respuesta del servidor";
+                    navigate("/Error", {state : {
+                        codigo : 500,
+                        error: "Error al intentar acceder al servidor",
+                        mensaje: requestErrorMsg
+                    }});
+                } else {
+                    navigate("/Error", {state : {
+                        codigo: 0,
+                        error: "Ocurrio un inconveniente",
+                        mensaje: ""
+                    }})
+                }
+            })
+    }
+
     return(
         <div className="bg-white-100 p-10">
             <div className="w-full">
-                <form action="#" method="post" onSubmit={handleSubmit}>
+                <form action="" method="post" onSubmit={handleSubmit}>
                     <h1 className="text-xl text-center">Formulario de Profesores</h1>
                     <h2 className="text-lg">Datos del profesor</h2>
                     <div className="flex">
@@ -139,17 +250,33 @@ export default function FormProfesor(){
                     maxLength={30}
                     />
                     <div className="flex">
-                        <label className="m-2">Email</label>
-                        { error.email && <p className="text-red-600 m-2">* El email es requerido</p>}
+                        <label className="m-2">DNI</label>
+                        { error.dni && <p className="text-red-600 m-2">* El DNI es requerido</p>}
+                    </div>
+                    <input 
+                    type="text" 
+                    id="dni"
+                    name="dni"
+                    autoComplete="off"
+                    placeholder="DNI"
+                    className="input"
+                    minLength={8}
+                    maxLength={8}
+                    value={formDataProfesor.dni}
+                    onChange={handleInput}
+                    />
+                    <div className="flex">
+                        <label className="m-2">Correo electrónico</label>
+                        { error.correoElectronico && <p className="text-red-600 m-2">* El correo es requerido</p>}
                     </div>
                     <input 
                     type="email" 
-                    id="email"
-                    name="email"
+                    id="correoElectronico"
+                    name="correoElectronico"
                     autoComplete="off"
-                    placeholder="Email"
+                    placeholder="Correo electrónico"
                     className="input"
-                    value={formDataProfesor.email}
+                    value={formDataProfesor.correoElectronico}
                     onChange={handleInput}
                     maxLength={30}
                     />
@@ -183,8 +310,60 @@ export default function FormProfesor(){
                     onChange={handleInput}
                     maxLength={40}
                     />
-
-                    <input type="submit" value="Registrar" className="w-full bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" />
+                    {
+                        (id) ? (
+                            <div className="flex">
+                                <input 
+                                type="submit" 
+                                value="Actualizar" 
+                                onClick={(e)=>modificarProfesor(e)} 
+                                className="w-[50%] bg-blue-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-500"/>
+                                {
+                                    (formDataProfesor.estadoProfesor===true) ? (
+                                        <input 
+                                        type="submit"
+                                        value="Dar de baja"
+                                        className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500"
+                                        onClick={(e)=>{
+                                            if(window.confirm("¿Estás seguro de que deseas dar de baja a este profesor?")){
+                                                bajaProfesor(e);
+                                            }
+                                        }}/>
+                                    ) : (
+                                        <input 
+                                        type="submit"
+                                        value="Reintegrar profesor"
+                                        className="w-[50%] bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500"
+                                        onClick={(e)=>{
+                                            if(window.confirm("¿Estás seguro de reintegrar a este profesor?")){
+                                                console.log("reintegra");
+                                            }
+                                        }}/>
+                                    )
+                                }
+                            </div>
+                        ) : (
+                            <div>
+                                {
+                                    alta===true && (
+                                    <div>
+                                       <Alert variant="filled" severity="success" className="w-full p-2 m-2 bg-green-400">
+                                           Profesor Registrado
+                                       </Alert>
+                                   </div>
+                                    )
+                                }
+                                <button
+                                id="buttonRegistro"
+                                className={`w-full text-white p-2 rounded-md m-2 cursor-pointer  ${ alta ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600 ' }"`}
+                                >
+                                    <div className="flex justify-center items-center">
+                                        <p>Registrar Profesor</p>
+                                    </div>
+                                </button>
+                            </div>
+                        )
+                    }
                 </form>
             </div>
         </div>

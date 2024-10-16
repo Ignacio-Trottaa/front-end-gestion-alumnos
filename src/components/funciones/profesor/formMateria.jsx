@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import materiasProfeServices from "../../../services/materiasProfeServices";
 
 export default function FormMateria({agregarMateria}) {
+    const navigate = useNavigate();
     function generarCodigo() {
         const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let codigo = '';
@@ -14,7 +16,7 @@ export default function FormMateria({agregarMateria}) {
         return codigo;
     }
     const [formDataMateria, setFormDataMateria] = useState({
-        profesor_id: 1,
+        //profesor_id: 1,
         nombre: "",
         descripcion: "",
         curso: "",
@@ -49,14 +51,24 @@ export default function FormMateria({agregarMateria}) {
             }
         } catch (error) {
             if (error.response) {
-                // El servidor respondió con un código de estado fuera del rango 2xx
-                console.error("Error en la respuesta de la API:", error.response.data);
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
             } else if (error.request) {
-                // La petición fue hecha pero no hubo respuesta
-                console.error("No se recibió respuesta del servidor", error.request);
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
             } else {
-                // Algo pasó al configurar la petición que detonó un error
-                console.error("Error al enviar los datos a la API", error.message);
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
             }
         }
     }

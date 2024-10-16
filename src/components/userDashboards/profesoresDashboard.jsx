@@ -2,8 +2,10 @@ import { useState } from "react";
 import React from "react";
 import SidebarProfesor from "../layout/SidebarProfesor";
 import FormMateria from "../funciones/profesor/formMateria";
+import IAsideBar from "./iaSideBar.jsx";
 
 export default function ProfesorDashboard() {
+    const [viewIA,setViewIA] =useState(false);
     // Estado para las materias
     const [materias, setMaterias] = useState([]);
     const [selectedMaterias,setSelectedMaterias] = useState(null);
@@ -77,6 +79,13 @@ export default function ProfesorDashboard() {
                         </div>
                       )}
             </div>
+            <div className="fixed bottom-4 right-4">
+                <button 
+                className="p-2 bg-blue-500 text-white rounded-full w-[40px]" 
+                onClick={() => setViewIA(!viewIA)}
+                >IA</button>
+            </div>
+            {viewIA && <IAsideBar closeSidebar={() => setViewIA(false)}/>}
         </div>
     );
 }

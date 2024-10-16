@@ -1,7 +1,11 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import EstudianteService from "../../../services/estudianteServices.js";
+
 export default function FormEstudiante() {
+    const [alta,setAlta] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
     const [dniInput, setDniInput] = useState({
@@ -12,59 +16,60 @@ export default function FormEstudiante() {
         nombre: "",
         apellido: "",
         dni: "",
-        fecha_nac: "",
-        lugar_nac: "",
-        estado_civil: "",
-        cant_hijos: "",
-        familiares_acargo: "",
+        fechaNacimiento: "",
+        lugarNacimiento: "",
+        estadoCivil: "",
+        cantidadHijos: "",
+        familiaresACargo: "",
         direccion: "",
         numero: "",
         piso: "",
-        depto: "",
+        departamento: "",
         localidad: "",
-        partido: "",
-        codigo_postal: "",
-        tel_personal: "",
-        correo_electronico: "",
+        codigoPostal: "",
+        telefonoPersonal: "",
+        correoElectronico: "",
         titulo: "",
-        anio_egreso: "",
-        institucion: "",
-        distrito: "",
-        otros_estudios: "",
+        anioEgreso: "",
+        institucion:"",
+        localidadInstitucion: "",
+        otrosEstudios: "",
         trabaja: "",
         actividad: "",
-        horario_inicio: "",
-        horario_fin: "",
-        obra_social: "",
-        nombre_obra: "",
-        estado_estudiante: "true"
+        horarioInicio: "",
+        horarioFin: "",
+        obraSocial: "",
+        nombreObraSocial: "",
+        estadoEstudiante: "true"
     });
     const [error, setError] = useState({
         nombre: false,
         apellido: false,
         dni: false,
-        fecha_nac: false,
-        lugar_nac: false,
-        estado_civil: false,
-        cant_hijos: false,
-        familiares_acargo: false,
+        fechaNacimiento: false,
+        lugarNacimiento: false,
+        estadoCivil: false,
+        cantidadHijos: false,
+        familiaresACargo: false,
         direccion: false,
         numero: false,
+        piso: false,
+        departamento: false,
         localidad: false,
-        partido: false,
-        codigo_postal: false,
-        tel_personal: false,
-        correo_electronico: false,
+        codigoPostal: false,
+        telefonoPersonal:false,
+        correoElectronico: false,
         titulo: false,
-        anio_egreso: false,
-        institucion: false,
-        distrito: false,
-        trabaja: false,
-        actividad: false,
-        horario_inicio: false,
-        horario_fin: false,
-        obra_social: false,
-        nombre_obra: false,
+        anioEgreso: false,
+        institucion:false,
+        localidadInstitucion: false,
+        otrosEstudios: false,
+        trabaja:false,
+        actividad:false,
+        horarioInicio: false,
+        horarioFin: false,
+        obraSocial: false,
+        nombreObraSocial: false
     });
 
     const handleInput = (e) => {
@@ -73,16 +78,15 @@ export default function FormEstudiante() {
         const soloLetrasCampos = [
             "nombre",
             "apellido",
-            "lugar_nac",
-            "estado_civil",
+            "lugarNacimiento",
+            "estadoCivil",
             "direccion",
             "localidad",
-            "partido",
+            "localidadInstitucion",
             "titulo",
-            "distrito",
-            "otros_estudios",
+            "otrosEstudios",
             "actividad",
-            "nombre_obra"
+            "nombreObraSocial"
         ];
 
         if (soloLetrasCampos.includes(name)) {
@@ -92,29 +96,29 @@ export default function FormEstudiante() {
                     [name]: value
                 })
             }
-        } else if (name === "horario_inicio" || name === "horario_fin") {
+        } else if (name === "horarioInicio" || name === "horarioFin") {
             setFormData({
                 ...formData,
                 [name]: value
             })
         } else if (/^\d*$/.test(value)) {//valida que solo sean digitos//expresiones regulares
             setFormData({
-                ...formData,//copia todas las propiedades de formData existentes
+                ...formData,
                 [name]: value
             })
-        } else if (name === "fecha_nac") {
+        } else if (name === "fechaNacimiento") {
             if (validarFecha(value)) {
                 setFormData({
                     ...formData,
                     [name]: value
                 })
             }
-        } else if (name === "trabaja" || name === "obra_social" || name === "institucion") {
+        } else if (name === "trabaja" || name === "obraSocial" || name === "institucion") {
             setFormData({
                 ...formData,
                 [name]: value
             })
-        } else if (name === "correo_electronico") {
+        } else if (name === "correoElectronico") {
                 setFormData({
                     ...formData,
                     [name]: value.toLowerCase()
@@ -162,29 +166,89 @@ export default function FormEstudiante() {
     function validarCampo(campo) {
         return campo.trim() !== '';
     }
+    function viewAlta(){
+        const button = document.getElementById('buttonRegistro');
+        setAlta(true);
+        button.disabled=true; 
+        setTimeout(()=>{
+            setAlta(false);
+            setFormData({ //Vacia formulario
+                nombre: "",
+                apellido: "",
+                dni: "",
+                fechaNacimiento: "",
+                lugarNacimiento: "",
+                estadoCivil: "",
+                cantidadHijos: "",
+                familiaresACargo: "",
+                direccion: "",
+                numero: "",
+                piso: "",
+                departamento: "",
+                localidad: "",
+                codigoPostal: "",
+                telefonoPersonal: "",
+                correoElectronico: "",
+                titulo: "",
+                anioEgreso: "",
+                institucion:"",
+                localidadInstitucion: "",
+                otrosEstudios: "",
+                trabaja: "",
+                actividad: "",
+                horarioInicio: "",
+                horarioFin: "",
+                obraSocial: "",
+                nombreObraSocial: "",
+            });
+            button.disabled=false;
+        }, 3000);
+        setTimeout(() => {
+            navigate("/admin/formulario_estudiante");
+        }, 3000);
+    }
     const altaEstudiante = async () => {
         try {
             let response;
             if (id) {
                 response = await EstudianteService.updateEstudiante(id, formData);
             } else {
+                console.log(formData);
                 response = await EstudianteService.AltaEstudiante(formData);
             }
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
-                console.log(response.data); 
-                navigate("/admin/formulario_estudiante");
+                console.log(response.data);
+                viewAlta();
             } else {
                 console.error("Error al enviar los datos");
             }
         } catch (error) {
-            console.error("Error al enviar los datos a la API", error);
+            if (error.response) {
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
+            } else if (error.request) {
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
+            } else {
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
+            }
         }
     };
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
-
         // Validar cada campo
         const newErrors = {};
         Object.keys(formData).forEach(field => {
@@ -221,31 +285,30 @@ export default function FormEstudiante() {
                 nombre: "",
                 apellido: "",
                 dni: "",
-                fecha_nac: "",
-                lugar_nac: "",
-                estado_civil: "",
-                cant_hijos: "",
-                familiares_acargo: "",
+                fechaNacimiento: "",
+                lugarNacimiento: "",
+                estadoCivil: "",
+                cantidadHijos: "",
+                familiaresACargo: "",
                 direccion: "",
                 numero: "",
                 piso: "",
-                depto: "",
+                departamento: "",
                 localidad: "",
-                partido: "",
-                codigo_postal: "",
-                tel_personal: "",
-                correo_electronico: "",
+                codigoPostal: "",
+                telefonoPersonal: "",
+                correoElectronico: "",
                 titulo: "",
-                anio_egreso: "",
-                institucion: "",
-                distrito: "",
-                otros_estudios: "",
+                anioEgreso: "",
+                institucion:"",
+                localidadInstitucion: "",
+                otrosEstudios: "",
                 trabaja: "false",
                 actividad: "",
-                horario_inicio: "",
-                horario_fin: "",
-                obra_social: "false",
-                nombre_obra: "",
+                horarioInicio: "",
+                horarioFin: "",
+                obraSocial: "false",
+                nombreObraSocial: "",
                 estado_estudiante: "true"
             });
         }
@@ -257,7 +320,26 @@ export default function FormEstudiante() {
                 console.log(response.data);
                 navigate("/admin/estudiantes");
             }).catch(error => {
-                console.log(error);
+                if (error.response) {
+                    navigate("/Error",{state : {
+                           codigo: error.response.status,
+                           error: error.response.data.error,
+                           mensaje: error.message
+                    }});
+                } else if (error.request) {
+                    const requestErrorMsg = "No se recibió respuesta del servidor";
+                    navigate("/Error", {state : {
+                        codigo : 500,
+                        error: "Error al intentar acceder al servidor",
+                        mensaje: requestErrorMsg
+                    }});
+                } else {
+                    navigate("/Error", {state : {
+                        codigo: 0,
+                        error: "Ocurrio un inconveniente",
+                        mensaje: ""
+                    }})
+                }
             })
     }
     //llamadad a la api
@@ -267,7 +349,26 @@ export default function FormEstudiante() {
             console.log(response.data);
             navigate("/admin/estudiantes");
         }).catch(error => {
-            console.log(error);
+            if (error.response) {
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
+            } else if (error.request) {
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
+            } else {
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
+            }
         })
     }
     {/*ARREGLAR BUSQUEDA POR DNI */}
@@ -315,7 +416,7 @@ export default function FormEstudiante() {
                         />    
                     </div>
                 <form action="" method="post" className="" onSubmit={handleSubmit}>
-                    <h1 className="text-xl text-center">Formulario de estudiates</h1>
+                    <h1 className="text-xl text-center">Formulario de estudiantes</h1>
                     <h2 className="text-lg">Datos del estudiante</h2>
                     <div className="flex">
                         <label className="m-2">Nombres</label>
@@ -365,41 +466,41 @@ export default function FormEstudiante() {
                     />
                     <div className="flex">
                         <label className="m-2">Fecha de Nacimiento</label>
-                        {error.fecha_nac && <p className="text-red-600 m-2">La fecha de nacimiento es requerida</p>}
+                        {error.fechaNacimiento && <p className="text-red-600 m-2">La fecha de nacimiento es requerida</p>}
                     </div>
                     <input
                         type="date"
-                        id="fecha_nac"
-                        name="fecha_nac"
+                        id="fechaNacimiento"
+                        name="fechaNacimiento"
                         className="input"
                         onChange={handleInput}
-                        value={formData.fecha_nac}
+                        value={formData.fechaNacimiento}
                     />
                     <div className="flex">
                         <label className="m-2">Lugar de Nacimiento</label>
-                        {error.lugar_nac && <p className="text-red-600 m-2">El lugar de nacimiento es requerido</p>}
+                        {error.lugarNacimiento && <p className="text-red-600 m-2">El lugar de nacimiento es requerido</p>}
                     </div>
                     <input
                         type="text"
-                        id="lugar_nac"
-                        name="lugar_nac"
+                        id="lugarNacimiento"
+                        name="lugarNacimiento"
                         autoComplete="off"
                         placeholder="Lugar de nacimiento"
                         className="input"
                         onChange={handleInput}
-                        value={formData.lugar_nac}
+                        value={formData.lugarNacimiento}
                         maxLength={50}
                     />
                     <div className="flex">
                         <label className="m-2">Estado Civil</label>
-                        {error.estado_civil && <p className="text-red-600 m-2">El estado civil es requerido</p>}
+                        {error.estadoCivil && <p className="text-red-600 m-2">El estado civil es requerido</p>}
                     </div>
                     <select
-                        id="estado_civil"
-                        name="estado_civil"
+                        id="estadoCivil"
+                        name="estadoCivil"
                         className="input"
                         onChange={handleInput}
-                        value={formData.estado_civil}>
+                        value={formData.estadoCivil}>
                         <option value="">Seleccione...</option>
                         <option value="soltero">Soltero/a</option>
                         <option value="casado">Casado/a</option>
@@ -408,32 +509,32 @@ export default function FormEstudiante() {
                     </select>
                     <div className="flex">
                         <label className="m-2">Hijos</label>
-                        {error.cant_hijos && <p className="text-red-600 m-2">La cantidad de hijos es requerida</p>}
+                        {error.cantidadHijos && <p className="text-red-600 m-2">La cantidad de hijos es requerida</p>}
                     </div>
                     <input
                         type="text"
-                        id="cant_hijos"
-                        name="cant_hijos"
+                        id="cantidadHijos"
+                        name="cantidadHijos"
                         autoComplete="off"
                         placeholder="Cantidad de hijos"
                         className="input"
                         onChange={handleInput}
-                        value={formData.cant_hijos}
+                        value={formData.cantidadHijos}
                         maxLength={2}
                     />
                     <div className="flex">
                         <label className="m-2">Familiares a Cargo</label>
-                        {error.familiares_acargo && <p className="text-red-600 m-2">La cantidad de familiares a cargo es requerida</p>}
+                        {error.familiaresACargo && <p className="text-red-600 m-2">La cantidad de familiares a cargo es requerida</p>}
                     </div>
                     <input
                         type="text"
-                        id="familiares_acargo"
-                        name="familiares_acargo"
+                        id="familiaresACargo"
+                        name="familiaresACargo"
                         autoComplete="off"
                         placeholder="Familiares a cargo"
                         className="input"
                         onChange={handleInput}
-                        value={formData.familiares_acargo}
+                        value={formData.familiaresACargo}
                         maxLength={2}
                     />
                     <div className="flex">
@@ -481,13 +582,13 @@ export default function FormEstudiante() {
                     <label className="m-2">Departamento</label>
                     <input
                         type="text"
-                        id="depto"
-                        name="depto"
+                        id="departamento"
+                        name="departamento"
                         autoComplete="off"
                         placeholder="Depto"
                         className="input"
                         onChange={handleInput}
-                        value={formData.depto}
+                        value={formData.departamento}
                         maxLength={50}
                     />
                     <div className="flex">
@@ -506,64 +607,49 @@ export default function FormEstudiante() {
                         maxLength={50}
                     />
                     <div className="flex">
-                        <label className="m-2">Partido</label>
-                        {error.partido && <p className="text-red-600 m-2">El partido es requerido</p>}
-                    </div>
-                    <input
-                        type="text"
-                        id="partido"
-                        name="partido"
-                        autoComplete="off"
-                        placeholder="Partido"
-                        className="input"
-                        onChange={handleInput}
-                        value={formData.partido}
-                        maxLength={50}
-                    />
-                    <div className="flex">
                         <label className="m-2">Código Postal</label>
-                        {error.codigo_postal && <p className="text-red-600 m-2">El Código Postal es requerido</p>}
+                        {error.codigoPostal && <p className="text-red-600 m-2">El Código Postal es requerido</p>}
                     </div>
                     <input
                         type="text"
-                        id="codigo_postal"
-                        name="codigo_postal"
+                        id="codigoPostal"
+                        name="codigoPostal"
                         autoComplete="off"
                         placeholder="Código postal"
                         className="input"
                         onChange={handleInput}
-                        value={formData.codigo_postal}
+                        value={formData.codigoPostal}
                         minLength={4}
                         maxLength={4}
                     />
                     <div className="flex">
                         <label className="m-2">Teléfono Personal</label>
-                        {error.tel_personal && <p className="text-red-600 m-2">El teléfono personal es requerido</p>}
+                        {error.telefonoPersonal && <p className="text-red-600 m-2">El teléfono personal es requerido</p>}
                     </div>
                     <input
                         type="text"
-                        id="tel_personal"
-                        name="tel_personal"
+                        id="telefonoPersonal"
+                        name="telefonoPersonal"
                         autoComplete="off"
                         placeholder="Teléfono personal"
                         className="input"
                         onChange={handleInput}
-                        value={formData.tel_personal}
+                        value={formData.telefonoPersonal}
                         maxLength={10}
                     />
                     <div className="flex">
                         <label className="m-2">Correo Electrónico</label>
-                        {error.correo_electronico && <p className="text-red-600 m-2">El correo electrónico es requerido</p>}
+                        {error.correoElectronico && <p className="text-red-600 m-2">El correo electrónico es requerido</p>}
                     </div>
                     <input
                         type="email"
-                        id="correo_electronico"
-                        name="correo_electronico"
+                        id="correoElectronico"
+                        name="correoElectronico"
                         autoComplete="off"
                         placeholder="Correo electrónico"
                         className="input"
                         onChange={handleInput}
-                        value={formData.correo_electronico}
+                        value={formData.correoElectronico}
                         maxLength={40}
                     />
 
@@ -585,17 +671,17 @@ export default function FormEstudiante() {
                     />
                     <div className="flex">
                         <label className="m-2">Año de egreso</label>
-                        {error.anio_egreso && <p className="text-red-600 m-2">El año de egreso es requerido</p>}
+                        {error.anioEgreso && <p className="text-red-600 m-2">El año de egreso es requerido</p>}
                     </div>
                     <input
                         type="text"
-                        id="anio_egreso"
-                        name="anio_egreso"
+                        id="anioEgreso"
+                        name="anioEgreso"
                         autoComplete="off"
                         placeholder="Año de egreso"
                         className="input"
                         onChange={handleInput}
-                        value={formData.anio_egreso}
+                        value={formData.anioEgreso}
                         minLength={4}
                         maxLength={4}
                     />
@@ -615,30 +701,30 @@ export default function FormEstudiante() {
                         maxLength={50}
                     />
                     <div className="flex">
-                        <label className="m-2">Distrito</label>
-                        {error.distrito && <p className="text-red-600 m-2">El distrito es requerido</p>}
+                        <label className="m-2">Localidad Institución</label>
+                        {error.localidadInstitucion && <p className="text-red-600 m-2">La localidad del instituto es requerida</p>}
                     </div>
                     <input
                         type="text"
-                        id="distrito"
-                        name="distrito"
+                        id="localidadInstitucion"
+                        name="localidadInstitucion"
                         autoComplete="off"
-                        placeholder="Distrito"
+                        placeholder="Localidad del instituto"
                         className="input"
                         onChange={handleInput}
-                        value={formData.distrito}
-                        maxLength={40}
+                        value={formData.localidadInstitucion}
+                        maxLength={50} 
                     />
                     <label className="m-2">Otros estudios</label>
                     <input
                         type="text"
-                        id="otros_estudios"
-                        name="otros_estudios"
+                        id="otrosEstudios"
+                        name="otrosEstudios"
                         autoComplete="off"
                         placeholder="Otros estudios"
                         className="input"
                         onChange={handleInput}
-                        value={formData.otros_estudios}
+                        value={formData.otrosEstudios}
                         maxLength={70}
                     />
 
@@ -688,37 +774,37 @@ export default function FormEstudiante() {
                         <h2 className="text-lg">Horario Habitual</h2>
                         <div className="flex">
                             <label className="m-2">Inicio de Horario</label>
-                            {error.horario_inicio && <p className="text-red-600 m-2">Horario invalido o no posee el formato solicitado</p>}
+                            {error.horarioInicio && <p className="text-red-600 m-2">Horario invalido o no posee el formato solicitado</p>}
                         </div>
                         <input
                             type="text"
-                            id="horario_inicio"
-                            name="horario_inicio"
+                            id="horarioInicio"
+                            name="horarioInicio"
                             autoComplete="off"
                             placeholder="Ejm: 8 AM"
                             className="input"
                             onChange={validarHorario}
-                            value={formData.horario_inicio}
+                            value={formData.horarioInicio}
                             maxLength={5}
                         />
                         <div className="flex">
                             <label className="m-2">Fin de Horario</label>
-                            {error.horario_fin && <p className="text-red-600 m-2">Horario invalido o no posee el formato solicitado</p>}
+                            {error.horarioFin && <p className="text-red-600 m-2">Horario invalido o no posee el formato solicitado</p>}
                         </div>
                         <input
                             type="text"
-                            id="horario_fin"
-                            name="horario_fin"
+                            id="horarioFin"
+                            name="horarioFin"
                             autoComplete="off"
                             placeholder="Ejm: 5 PM"
                             className="input"
                             onChange={validarHorario}
-                            value={formData.horario_fin}
+                            value={formData.horarioFin}
                             maxLength={5}
                         />
                         <div className="flex">
                             <label className="m-2">¿Posee obra social?</label><br />
-                            {error.obra_social && <p className="text-red-600 m-2">El dato es requerido</p>}
+                            {error.obraSocial && <p className="text-red-600 m-2">El dato es requerido</p>}
                         </div>
                         <label className="m-2">Si</label>
                         <input
@@ -728,7 +814,7 @@ export default function FormEstudiante() {
                             autoComplete="off"
                             className="mr-4"
                             value="true"
-                            checked={formData.obra_social === true}
+                            checked={formData.obraSocial === true}
                             onChange={handleInput}
                         />
                         <label className="m-2">No</label>
@@ -740,22 +826,22 @@ export default function FormEstudiante() {
                             className=""
                             onChange={handleInput}
                             value="false"
-                            checked={formData.obra_social === false}
+                            checked={formData.obraSocial === false}
                         /><br />
                         <div className="" id="obraSocial">
                             <div className="flex">
                                 <label className="m-2">Nombre de obra social</label>
-                                {error.nombre_obra && <p className="text-red-600 m-2">El dato es requerido</p>}
+                                {error.nombreObraSocial && <p className="text-red-600 m-2">El dato es requerido</p>}
                             </div>
                             <input
                                 type="text"
-                                id="nombre_obra"
-                                name="nombre_obra"
+                                id="nombreObraSocial"
+                                name="nombreObraSocial"
                                 autoComplete="off"
                                 placeholder="Nombre de obra social"
                                 className="input"
                                 onChange={handleInput}
-                                value={formData.nombre_obra}
+                                value={formData.nombreObraSocial}
                                 maxLength={40}
                             />
                         </div>
@@ -766,11 +852,15 @@ export default function FormEstudiante() {
                             <div className="flex">
                                 <input type="submit" value="Actualizar" onClick={(e) => modificarEstudiante(e)} className="w-[50%] bg-blue-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-500" />
                                 {
-                                    (formData.estado_estudiante===true) ?(
+                                    (formData.estadoEstudiante===true) ?(
                                         <input type="submit" value="Dar de baja" onClick={(e) => {
-                                            if (window.confirm("¿Estás seguro de que deseas dar de baja a este estudiante?")) {
-                                                bajaEstudiante(e);
-                                            }
+                                            <Alert severity="warning" action={
+                                                <Button color="inherit" size="small" onClick={bajaEstudiante(e)}>
+                                                    Dar de baja
+                                                </Button>
+                                            }>
+                                                ¿Estás seguro de que deseas dar de baja a este estudiante?
+                                                </Alert>                                            
                                         }}
                                             className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500" />
                                     ):(
@@ -783,11 +873,28 @@ export default function FormEstudiante() {
                                             className="w-[50%] bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" />
                                     )
                                 }
-                                
                             </div>
                         ) : (
-                            <input type="submit" value="Registrar" className="w-full bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" />
-                        )
+                            <div>
+                                {
+                                    alta===true && (
+                                    <div>
+                                       <Alert variant="filled" severity="success" className="w-full p-2 m-2 bg-green-400">
+                                           Estudiante Registrado
+                                       </Alert>
+                                   </div>
+                                    )
+                                }
+                            <button
+                            id="buttonRegistro"
+                            className={`w-full text-white p-2 rounded-md m-2 cursor-pointer  ${ alta ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600 ' }"`}
+                            >
+                            <div className="flex justify-center items-center">
+                                <p>Registrar estudiante</p>
+                            </div>
+                            </button>
+                            </div>
+                            )
                     }
                     </form>
                 </div>
