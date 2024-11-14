@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import materiasProfeServices from "../../../services/materiasProfeServices";
+import {toast} from 'react-toastify';
 
 export default function FormMateria({agregarMateria}) {
     const navigate = useNavigate();
@@ -16,7 +17,6 @@ export default function FormMateria({agregarMateria}) {
         return codigo;
     }
     const [formDataMateria, setFormDataMateria] = useState({
-        //profesor_id: 1,
         nombre: "",
         descripcion: "",
         curso: "",
@@ -46,6 +46,7 @@ export default function FormMateria({agregarMateria}) {
                 console.log("Datos enviados exitosamente");
                 console.log(response.data); // Maneja la respuesta si es necesario
                 console.log(formDataMateria)
+                toast.success("¡Materia creada exitosamente!")
             } else {
                 console.error("Error al enviar los datos");
             }
@@ -77,18 +78,13 @@ export default function FormMateria({agregarMateria}) {
         // Validar los campos
         const newErrors = {};
         Object.keys(formDataMateria).forEach(field => {
-            if(field==="profesor_id"){
-                newErrors[field] = formDataMateria.profesor_id <= 0;
-            }else{
                 newErrors[field] = formDataMateria[field].trim() === "";
-            }
         });
         setError(newErrors);
         if (Object.values(newErrors).every(val => !val)) {
-            createMateria();
-            agregarMateria(formDataMateria);  // Llama a la función para agregar la materia
-            console.log(formDataMateria);
-            setFormDataMateria({ profesor_id: "1", nombre: "", descripcion: "", curso: ""});  // Reinicia el formulario
+            createMateria();// Crea la clase
+            agregarMateria(formDataMateria);  // Agrega la materia al sidebar
+            setFormDataMateria({ nombre: "", descripcion: "", curso: "", codigo: generarCodigo()});  // Reinicia el formulario
         }
     };
     return (

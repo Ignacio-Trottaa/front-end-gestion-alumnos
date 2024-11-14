@@ -21,6 +21,9 @@ class EstudianteService {
     findAlumnoByDNI(dni) {
         return axios.get(ESTUDIANTE_BASE_REST_API_URL + "/alumno/dni/" + dni);
     }
+    allMateriasByAlumno(id){
+        return axios.get(ESTUDIANTE_BASE_REST_API_URL+"/alumno/"+id+"/materias");
+    }
 }
 
 export default new EstudianteService();

@@ -11,7 +11,22 @@ export default function EstudianteDashboard() {
         <div className="flex">
             <SidebarAlumno />
             <div className="ml-64 w-full">
-                <Outlet />
+            <div
+                    className="sticky inset-0 bg-cover bg-center opacity-50"
+                    style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "59%",
+                        transform: "translate(-50%, -50%)",
+                        height: "100%",
+                        opacity: 0.6,
+                        backgroundImage: "url('/LogoLeopoldoMarechal.png')",
+                        filter: "blur(4px)"
+                    }}
+                ></div>
+                <div className="relative z-10">
+                    <Outlet />
+                </div>
             </div>
             <div className="fixed bottom-4 right-4">
                 <button 

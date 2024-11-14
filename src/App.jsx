@@ -19,6 +19,8 @@ import Solicitar from './components/funciones/estudiante/solicitar.jsx';
 import FormMateria from './components/funciones/profesor/formMateria.jsx';
 
 import ViewError from './components/Error/error.jsx';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 import { BrowserRouter as BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -48,6 +50,7 @@ function App() {
             <Route path='Error' element={<ViewError />}/>
             <Route path='*' element={<ViewError />}/>
         </Routes>
+        <ToastContainer autoClose={2000}/>
     </BrowserRouter>
   );
 }

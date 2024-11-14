@@ -1,7 +1,6 @@
 import React, {useState,useEffect} from "react";
 
-
-export default function Materia(){
+const Materia = ({selectedMaterias}) =>{
 
     return(
         <div className="p-5 bg-white border h-full">
@@ -39,3 +38,4 @@ export default function Materia(){
                     </div>
     )
 }
+export default Materia;

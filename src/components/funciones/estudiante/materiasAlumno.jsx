@@ -1,48 +1,26 @@
 import React , { useEffect ,useState} from "react";
 import ListaMaterias from "./listaMaterias";
 import inscripcionServices from "../../../services/inscripcionServices";
-import materiasProfeServices from "../../../services/materiasProfeServices";
 
 export default function MateriasAlumno(){
     const [opcion,setOpcion] = useState("");
-    const [find,setFind] = useState(false);
     const [idAlumno,setIdAlumno] = useState({
-        id: 8 //sesion del alumno
+        id: 2 //sesion del alumno
     })
-    const [dataMateria,setDataMateria] = useState({
-        id: "",
-        nombre:"",
-        descripcion:"",
-        curso:"",
-        codigo:""
-    })
+    const [codigo,setCodigo] = useState("")
     const handleInput = (e) => {
-        const { name, value } = e.target;
-        setDataMateria({
-            ...dataMateria,
-            [name]: value
-        });
+        setCodigo(e.target.value)
     };
-    const findMateria = (e) =>{
+    const inscribirse = (e) =>{
         e.preventDefault();
-        materiasProfeServices.findMateria(dataMateria.id).then((response)=>{
-            console.log(response.data);
-            setDataMateria(response.data);
-            setFind(true);
-            inscripcionServices.inscribirse(idAlumno.id,dataMateria.id).then((response)=>{
-                console.log(response.data);
+            inscripcionServices.inscribirse(idAlumno.id,codigo).then((response)=>{
+                console.log(response.data);//agregar toast
+                setCodigo("")
+            }).catch(error=>{
+                setCodigo("")
+                console.log("Materia no encontrada.");
             })            
-        }).catch(error =>{
-            setFind(false);
-            console.log(error);
-        })
-    }
-    const desinscribirse = (e) =>{
-        e.preventDefault();
-        inscripcionServices.desinscribirse(idAlumno.id,dataMateria.id).then((response)=>{
-            console.log(response.data)
-        })
-    }
+   }
 
     return (
         <div className="p-4 flex flex-col items-center">
@@ -56,23 +34,24 @@ export default function MateriasAlumno(){
                     <label className="my-auto cursor-pointer">Ver materias</label>
                 </button>
             </div>
+
             {
                 opcion==="unirse" && (
                 <div className="bg-blue-300 p-5 rounded-md shadow-xl m-3">
                     <form>
-                        <h3 className="text-center text-xl mb-5">Unirse a un aula virtual</h3>
-                        <label>Codigo de aula </label>
+                        <h3 className="text-center text-xl mb-5">Unirse a una clase virtual</h3>
+                        <label>Codigo de clase </label>
                         <input 
                         type="text" 
-                        name="id"
-                        id="id"
+                        name="codigo"
+                        id="codigo"
                         className="p-1 outline-none rounded-sm border-2 focus:border-blue-600"
-                        value={dataMateria.id}
+                        value={codigo}
                         onChange={handleInput}
-                       // maxLength={6}
-                       // minLength={6} 
-                        placeholder="Ingresa el codigo del aula"/><br/>
-                        <button onClick={(e)=>findMateria(e)} className="mt-5 rounded-full w-full  bg-green-500 p-2 cursor-pointer hover:bg-green-400">Unirse</button>
+                        maxLength={6}
+                        minLength={6} 
+                        placeholder="Ingresa el codigo de la clase"/><br/>
+                        <button onClick={(e)=>inscribirse(e)} className="mt-5 rounded-full w-full  bg-green-500 p-2 cursor-pointer hover:bg-green-400">Unirse</button>
                     </form>
                 </div>
                 )
@@ -83,17 +62,6 @@ export default function MateriasAlumno(){
                         <ListaMaterias/>
                     </div>
                 )
-            }
-            {
-                    find && (
-                        <div className="mt-5">
-                            <p>Nombre: {dataMateria.nombre}</p>
-                            <p>Descripcion: {dataMateria.descripcion}</p>
-                            <p>Curso: {dataMateria.curso}</p>
-                            <p>Codigo: {dataMateria.codigo}</p>
-                            <button onClick={(e)=>desinscribirse(e)}>Desinscribirse</button>
-                        </div>
-                    )
             }
         </div>
         )

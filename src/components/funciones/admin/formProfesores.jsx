@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate , useParams } from "react-router-dom";
 import ProfesorService from "../../../services/profesoresServices";
-import Alert from '@mui/material/Alert';
+import { toast } from "react-toastify";
+
 
 export default function FormProfesor(){
     const { id } = useParams();
-    const [alta,setAlta] = useState(false);
     const navigate = useNavigate();
     const [formDataProfesor,setFormDataProfesor]=useState({
         nombre: "",
@@ -16,7 +16,17 @@ export default function FormProfesor(){
         materia: "",
         estadoProfesor:"true"
     });
-
+    function vaciarFormulario(){
+        setFormDataProfesor({
+            nombre: "",
+            apellido: "",
+            dni:"",
+            correoElectronico: "",
+            telefono: "",
+            materia: "",
+            estadoProfesor:"true"
+        })
+    }
     const [error,setError]=useState({
         nombre:false,
         apellido:false,
@@ -56,27 +66,113 @@ export default function FormProfesor(){
     function validarCampo(campo) {
         return campo.trim() !== '';
     }
-    function viewAlta(){
-        const button = document.getElementById('buttonRegistro');
-        setAlta(true);
-        button.disabled=true;
-        setTimeout(() => {
-            setAlta(false);
-            setFormDataProfesor({
-                nombre:"",
-                apellido:"",
-                dni:"",
-                correoElectronico: "",
-                telefono: "",
-                materia: "",
-                estadoProfesor:"true"
-            })
-            button.disabled=false; 
-        }, 3000);
-        setTimeout(() => {
-            navigate("/admin/formulario_profesores");
-        }, 3000);
-    }
+    function confirmarActualizacion(e){
+        e.preventDefault()
+        toast(
+          ({ closeToast }) => (
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-gray-800 font-semibold">
+                ¿Estás seguro de modificar los datos del profesor?
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => confirmarModificacion(closeToast)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false, // Evita que la alerta se cierre automáticamente
+            closeOnClick: false,
+          }
+        );
+      };
+      const confirmarModificacion = (closeToast) => {
+        modificarProfesor();
+        toast.success("Profesor actualizado correctamente", { autoClose: 2000 });
+        closeToast();
+      };
+
+      function confirmarBaja(e){
+        e.preventDefault()
+        toast(
+          ({ closeToast }) => (
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-gray-800 font-semibold">
+                ¿Estás seguro de dar de baja al profesor?
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => bajaConfirmar(closeToast)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false, // Evita que la alerta se cierre automáticamente
+            closeOnClick: false,
+          }
+        );
+      };
+      const bajaConfirmar = (closeToast) => {
+        bajaProfesor();
+        toast.success("Profesor inhabilitado correctamente", { autoClose: 2000 });
+        closeToast();
+      };
+
+      function confirmarReintegro(e){
+        e.preventDefault()
+        toast(
+          ({ closeToast }) => (
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-gray-800 font-semibold">
+                ¿Estás seguro reintegrar al profesor?
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => reintegro(closeToast)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false, // Evita que la alerta se cierre automáticamente
+            closeOnClick: false,
+          }
+        );
+      };
+      const reintegro = (closeToast) => {
+        //reintegrarEstudiante()
+        toast.success("Profesor habilitado correctamente", { autoClose: 2000 });
+        closeToast();
+      };
     const altaProfesor = async () => {
         try {
             let response;
@@ -84,7 +180,8 @@ export default function FormProfesor(){
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
                 console.log(response.data); // Maneja la respuesta si es necesario
-                viewAlta()
+                toast.success("¡Profesor creado exitosamente!");
+                vaciarFormulario()
             } else {
                 console.error("Error al enviar los datos");
             }
@@ -144,20 +241,11 @@ export default function FormProfesor(){
                 console.log(error);
             })
         }else{
-            setFormDataProfesor({
-                nombre: "",
-                apellido: "",
-                dni:"",
-                correoElectronico: "",
-                telefono: "",
-                materia: "",
-                estadoProfesor:"true"
-            })
+            vaciarFormulario();
         }
     },[id]);
     
-    const modificarProfesor = (e) => {
-        e.preventDefault();
+    function modificarProfesor(){
             ProfesorService.updateProfesor(id,formDataProfesor).then(response =>{
                 console.log(response.data);
                 navigate("/admin/profesores");
@@ -184,8 +272,7 @@ export default function FormProfesor(){
                 }
             })
     }
-    const bajaProfesor = (e) =>{
-        e.preventDefault();
+    function bajaProfesor(){
             ProfesorService.deleteProfesor(id,formDataProfesor).then(response =>{
                 console.log(response.data);
                 navigate("/admin/profesores");
@@ -316,7 +403,7 @@ export default function FormProfesor(){
                                 <input 
                                 type="submit" 
                                 value="Actualizar" 
-                                onClick={(e)=>modificarProfesor(e)} 
+                                onClick={(e)=>confirmarActualizacion(e)} 
                                 className="w-[50%] bg-blue-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-500"/>
                                 {
                                     (formDataProfesor.estadoProfesor===true) ? (
@@ -324,38 +411,23 @@ export default function FormProfesor(){
                                         type="submit"
                                         value="Dar de baja"
                                         className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500"
-                                        onClick={(e)=>{
-                                            if(window.confirm("¿Estás seguro de que deseas dar de baja a este profesor?")){
-                                                bajaProfesor(e);
-                                            }
-                                        }}/>
+                                        onClick={(e)=>confirmarBaja(e)}
+                                        />
                                     ) : (
                                         <input 
                                         type="submit"
                                         value="Reintegrar profesor"
                                         className="w-[50%] bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500"
-                                        onClick={(e)=>{
-                                            if(window.confirm("¿Estás seguro de reintegrar a este profesor?")){
-                                                console.log("reintegra");
-                                            }
-                                        }}/>
+                                        onClick={(e)=>confirmarReintegro(e)}
+                                        />
                                     )
                                 }
                             </div>
                         ) : (
                             <div>
-                                {
-                                    alta===true && (
-                                    <div>
-                                       <Alert variant="filled" severity="success" className="w-full p-2 m-2 bg-green-400">
-                                           Profesor Registrado
-                                       </Alert>
-                                   </div>
-                                    )
-                                }
                                 <button
                                 id="buttonRegistro"
-                                className={`w-full text-white p-2 rounded-md m-2 cursor-pointer  ${ alta ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600 ' }"`}
+                                className={`w-full text-white p-2 rounded-md m-2 cursor-pointer bg-green-600 hover:bg-green-500`}
                                 >
                                     <div className="flex justify-center items-center">
                                         <p>Registrar Profesor</p>

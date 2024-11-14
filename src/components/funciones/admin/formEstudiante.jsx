@@ -1,17 +1,11 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
 import EstudianteService from "../../../services/estudianteServices.js";
+import { toast } from "react-toastify";
 
 export default function FormEstudiante() {
-    const [alta,setAlta] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
-    const [dniInput, setDniInput] = useState({
-        dni:""
-    });
-    const [existDni, setExistDni] = useState(false);
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
@@ -42,6 +36,38 @@ export default function FormEstudiante() {
         nombreObraSocial: "",
         estadoEstudiante: "true"
     });
+    function vaciarFormulario(){
+        setFormData({
+            nombre: "",
+            apellido: "",
+            dni: "",
+            fechaNacimiento: "",
+            lugarNacimiento: "",
+            estadoCivil: "",
+            cantidadHijos: "",
+            familiaresACargo: "",
+            direccion: "",
+            numero: "",
+            piso: "",
+            departamento: "",
+            localidad: "",
+            codigoPostal: "",
+            telefonoPersonal: "",
+            correoElectronico: "",
+            titulo: "",
+            anioEgreso: "",
+            institucion:"",
+            localidadInstitucion: "",
+            otrosEstudios: "",
+            trabaja: "false",
+            actividad: "",
+            horarioInicio: "",
+            horarioFin: "",
+            obraSocial: "false",
+            nombreObraSocial: "",
+            estadoEstudiante: "true"
+        });
+    }
     const [error, setError] = useState({
         nombre: false,
         apellido: false,
@@ -90,7 +116,7 @@ export default function FormEstudiante() {
         ];
 
         if (soloLetrasCampos.includes(name)) {
-            if (/^[a-zA-Z\s]*$/.test(value)) {//valida que solo sean letras
+            if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {//valida que solo sean letras
                 setFormData({
                     ...formData,
                     [name]: value
@@ -123,7 +149,6 @@ export default function FormEstudiante() {
                     ...formData,
                     [name]: value.toLowerCase()
                 })
-                console.log(value);
         }
     }
 
@@ -166,60 +191,125 @@ export default function FormEstudiante() {
     function validarCampo(campo) {
         return campo.trim() !== '';
     }
-    function viewAlta(){
-        const button = document.getElementById('buttonRegistro');
-        setAlta(true);
-        button.disabled=true; 
-        setTimeout(()=>{
-            setAlta(false);
-            setFormData({ //Vacia formulario
-                nombre: "",
-                apellido: "",
-                dni: "",
-                fechaNacimiento: "",
-                lugarNacimiento: "",
-                estadoCivil: "",
-                cantidadHijos: "",
-                familiaresACargo: "",
-                direccion: "",
-                numero: "",
-                piso: "",
-                departamento: "",
-                localidad: "",
-                codigoPostal: "",
-                telefonoPersonal: "",
-                correoElectronico: "",
-                titulo: "",
-                anioEgreso: "",
-                institucion:"",
-                localidadInstitucion: "",
-                otrosEstudios: "",
-                trabaja: "",
-                actividad: "",
-                horarioInicio: "",
-                horarioFin: "",
-                obraSocial: "",
-                nombreObraSocial: "",
-            });
-            button.disabled=false;
-        }, 3000);
-        setTimeout(() => {
-            navigate("/admin/formulario_estudiante");
-        }, 3000);
-    }
+
+    function confirmarActualizacion(e){
+        e.preventDefault()
+        toast(
+          ({ closeToast }) => (
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-gray-800 font-semibold">
+                ¿Estás seguro de modificar los datos del estudiante?
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => confirmarModificacion(closeToast)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false, // Evita que la alerta se cierre automáticamente
+            closeOnClick: false,
+          }
+        );
+      };
+      const confirmarModificacion = (closeToast) => {
+        modificarEstudiante();
+        toast.success("Estudiante actualizado correctamente", { autoClose: 2000 });
+        closeToast();
+      };
+
+      function confirmarBaja(e){
+        e.preventDefault()
+        toast(
+          ({ closeToast }) => (
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-gray-800 font-semibold">
+                ¿Estás seguro de dar de baja al estudiante?
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => bajaConfirmar(closeToast)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false, // Evita que la alerta se cierre automáticamente
+            closeOnClick: false,
+          }
+        );
+      };
+      const bajaConfirmar = (closeToast) => {
+        bajaEstudiante();
+        toast.success("Estudiante inhabilitado correctamente", { autoClose: 2000 });
+        closeToast();
+      };
+
+      function confirmarReintegro(e){
+        e.preventDefault()
+        toast(
+          ({ closeToast }) => (
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-gray-800 font-semibold">
+                ¿Estás seguro reintegrar al estudiante?
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => reintegro(closeToast)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false, // Evita que la alerta se cierre automáticamente
+            closeOnClick: false,
+          }
+        );
+      };
+      const reintegro = (closeToast) => {
+        //reintegrarEstudiante()
+        toast.success("Estudiante habilitado correctamente", { autoClose: 2000 });
+        closeToast();
+      };
+
+
     const altaEstudiante = async () => {
         try {
             let response;
-            if (id) {
-                response = await EstudianteService.updateEstudiante(id, formData);
-            } else {
-                console.log(formData);
                 response = await EstudianteService.AltaEstudiante(formData);
-            }
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
                 console.log(response.data);
-                viewAlta();
+                toast.success("¡Alumno creado exitosamente!");
+                vaciarFormulario();
             } else {
                 console.error("Error al enviar los datos");
             }
@@ -252,7 +342,7 @@ export default function FormEstudiante() {
         // Validar cada campo
         const newErrors = {};
         Object.keys(formData).forEach(field => {
-            if (["depto", "piso", "otros_estudios"].includes(field)) {
+            if (["departamento", "piso", "otrosEstudios"].includes(field)) {
                 // Si el campo es depto, piso o otros_estudios y está vacío, no lo consideres error
                 if (formData[field] === "") {
                     newErrors[field] = false; // No hay error
@@ -270,8 +360,11 @@ export default function FormEstudiante() {
         // Si no hay errores, puedes proceder con el envío del formulario
         if (Object.values(newErrors).every(val => !val)) {
             altaEstudiante(); // Llamamos a la función altaEstudiante aquí
+        }else{
+            console.log("Algunos campos requeridos no estan completos.");
         }
-    };    //HACER UNA CONSULTA PARA AGARRAR LOS DATOS DEL ALUMNO ATRAVES DEL ID 
+    };
+    //HACER UNA CONSULTA PARA AGARRAR LOS DATOS DEL ALUMNO ATRAVES DEL ID 
     useEffect(() => {
         if (id) {
             EstudianteService.getEstudianteById(id).then((response) => {
@@ -281,41 +374,11 @@ export default function FormEstudiante() {
                 console.log(error)
             })
         } else {
-            setFormData({
-                nombre: "",
-                apellido: "",
-                dni: "",
-                fechaNacimiento: "",
-                lugarNacimiento: "",
-                estadoCivil: "",
-                cantidadHijos: "",
-                familiaresACargo: "",
-                direccion: "",
-                numero: "",
-                piso: "",
-                departamento: "",
-                localidad: "",
-                codigoPostal: "",
-                telefonoPersonal: "",
-                correoElectronico: "",
-                titulo: "",
-                anioEgreso: "",
-                institucion:"",
-                localidadInstitucion: "",
-                otrosEstudios: "",
-                trabaja: "false",
-                actividad: "",
-                horarioInicio: "",
-                horarioFin: "",
-                obraSocial: "false",
-                nombreObraSocial: "",
-                estado_estudiante: "true"
-            });
+            vaciarFormulario();
         }
     }, [id]);
     //llamadad a la api
-    const modificarEstudiante = (e) => {
-        e.preventDefault();
+    function modificarEstudiante(){
             EstudianteService.updateEstudiante(id, formData).then(response => {
                 console.log(response.data);
                 navigate("/admin/estudiantes");
@@ -343,8 +406,7 @@ export default function FormEstudiante() {
             })
     }
     //llamadad a la api
-    const bajaEstudiante = (e) => {
-        e.preventDefault();
+    function bajaEstudiante(){
         EstudianteService.deleteEstudiante(id, formData).then(response => {
             console.log(response.data);
             navigate("/admin/estudiantes");
@@ -371,50 +433,10 @@ export default function FormEstudiante() {
             }
         })
     }
-    {/*ARREGLAR BUSQUEDA POR DNI */}
-    const buscarPorDNI = () => {
-        if (dniInput.dni.length === 8) {
-            EstudianteService.findAlumnoByDNI(dniInput.dni).then((response) => {
-                setFormData(response.data);
-                console.log(formData);  
-                console.log(response.data);
-                console.log(response.data.id);
-                setExistDni(true);
-            }).catch(error => {
-                setExistDni(false);
-                console.log(error);
-            });
-        } else {
-            console.log('DNI inválido');
-        }
-    };
-    const handleDNI = (e) => {
-        const { name, value } = e.target;
-        setDniInput({
-            ...dniInput,
-            [name]: value,
-        });
-    }; 
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     return (
-        <div className="bg-blue-100 p-10">
+        <div className="bg-white-100 p-10">
                 <div className="w-full">
-                    <div className="p-4 pt-0 w-full flex">
-                        <button onClick={buscarPorDNI} className="bg-blue-400 w-8 rounded-tl-lg rounded-bl-lg p-1 hover:bg-[#06B78B]">
-                            <ion-icon name="search"></ion-icon>
-                        </button>
-                        <input
-                            type="text"
-                            id="dni"
-                            name="dni"
-                            autoComplete="off"
-                            className="w-[90%] pl-3 p-1 rounded-tr-lg rounded-br-lg focus:outline-none"
-                            placeholder="Buscar DNI"
-                            maxLength={8}
-                            minLength={8}
-                            value={dniInput.dni}
-                            onChange={handleDNI}
-                        />    
-                    </div>
                 <form action="" method="post" className="" onSubmit={handleSubmit}>
                     <h1 className="text-xl text-center">Formulario de estudiantes</h1>
                     <h2 className="text-lg">Datos del estudiante</h2>
@@ -848,46 +870,36 @@ export default function FormEstudiante() {
                     </div>
                     <br />
                     {
-                        (id || existDni) ? (
+                        (id) ? (
                             <div className="flex">
-                                <input type="submit" value="Actualizar" onClick={(e) => modificarEstudiante(e)} className="w-[50%] bg-blue-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-500" />
+                                <input 
+                                type="submit" 
+                                value="Actualizar" 
+                                onClick={(e) => confirmarActualizacion(e)} 
+                                className="w-[50%] bg-blue-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-blue-500" />
                                 {
                                     (formData.estadoEstudiante===true) ?(
-                                        <input type="submit" value="Dar de baja" onClick={(e) => {
-                                            <Alert severity="warning" action={
-                                                <Button color="inherit" size="small" onClick={bajaEstudiante(e)}>
-                                                    Dar de baja
-                                                </Button>
-                                            }>
-                                                ¿Estás seguro de que deseas dar de baja a este estudiante?
-                                                </Alert>                                            
-                                        }}
-                                            className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500" />
+                                        <input 
+                                        type="submit" 
+                                        value="Dar de baja" 
+                                        className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500" 
+                                        onClick={(e)=>confirmarBaja(e)} 
+                                        />
                                     ):(
-                                        <input type="submit" value="Reintegrar Estudiante" onClick={(e) => {
-                                            if (window.confirm("¿Estás seguro de que reintegrar a este estudiante?")) {
-                                                {/*reintegraEstudiante(e); */}
-                                                console.log("reintegra");
-                                            }
-                                        }}
-                                            className="w-[50%] bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" />
+                                        <input 
+                                        type="submit" 
+                                        value="Reintegrar Estudiante" 
+                                        className="w-[50%] bg-green-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-green-500" 
+                                        onClick={(e) =>confirmarReintegro(e)}
+                                        />
                                     )
                                 }
                             </div>
                         ) : (
                             <div>
-                                {
-                                    alta===true && (
-                                    <div>
-                                       <Alert variant="filled" severity="success" className="w-full p-2 m-2 bg-green-400">
-                                           Estudiante Registrado
-                                       </Alert>
-                                   </div>
-                                    )
-                                }
                             <button
                             id="buttonRegistro"
-                            className={`w-full text-white p-2 rounded-md m-2 cursor-pointer  ${ alta ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600 ' }"`}
+                            className={`w-full text-white p-2 rounded-md m-2 cursor-pointer bg-green-600 hover:bg-green-500`}
                             >
                             <div className="flex justify-center items-center">
                                 <p>Registrar estudiante</p>

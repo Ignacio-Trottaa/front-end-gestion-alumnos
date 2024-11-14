@@ -16,7 +16,6 @@ const SidebarProfesor = ({ materias , onMateriaClick , onFormMateria}) => {
                         </a>
                     </li>
 
-                    {/* Renderizamos las materias aquí */}
                     {materias.map((materia, index) => (
                         <li className="my-2.5" key={index} onClick={() => onMateriaClick(materia)}>
                             <a className="text-base no-underline text-[#ecf0f1] flex items-center p-3 rounded hover:bg-[#06B78B] hover:cursor-pointer">

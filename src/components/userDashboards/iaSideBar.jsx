@@ -45,7 +45,7 @@ export default function IAsideBar({ closeSidebar }) {
     };
 
     return (
-        <div className="w-72 h-full bg-[#0670B7] text-[#ecf0f1] fixed top-0 right-0 flex flex-col shadow-[2px_0_5px_rgba(0, 0, 0, 0.1)]">
+        <div className="w-72 h-full bg-[#0670B7] text-[#ecf0f1] fixed top-0 right-0 flex flex-col shadow-[2px_0_5px_rgba(0, 0, 0, 0.1)] z-20">
             <div className="flex-grow overflow-y-auto">
                 <div className="flex p-3">
                     <h2>ChatBOT</h2>
