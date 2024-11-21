@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function Materias() {
     const initialData = [
@@ -8,9 +8,19 @@ export default function Materias() {
         { time: "21:00 - 22:00", lunes: "", martes: "", miercoles: "", jueves: "", viernes: "" },
     ];
 
-    const [schedule1, setSchedule1] = useState(initialData);
-    const [schedule2, setSchedule2] = useState(initialData);
-    const [schedule3, setSchedule3] = useState(initialData);
+    const loadSchedulesFromLocalStorage = () => {
+        const storedSchedules = localStorage.getItem("schedules");
+        if (storedSchedules) {
+            return JSON.parse(storedSchedules);
+        }
+        return {
+            "1°Año": initialData,
+            "2°Año": initialData,
+            "3°Año": initialData,
+        };
+    };
+
+    const [schedules, setSchedules] = useState(loadSchedulesFromLocalStorage());
     const [selectedYear, setSelectedYear] = useState("1°Año");
 
     const [formData, setFormData] = useState({
@@ -20,6 +30,11 @@ export default function Materias() {
         horaInicio: "18:00",
         horaFin: "19:00",
     });
+
+    // Guardar horarios en localStorage cada vez que cambien
+    useEffect(() => {
+        localStorage.setItem("schedules", JSON.stringify(schedules));
+    }, [schedules]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -34,7 +49,7 @@ export default function Materias() {
 
     const handleAddMateria = () => {
         const { materia, profesor, dia, horaInicio, horaFin } = formData;
-        const updatedSchedule = [...getSelectedSchedule()];
+        const updatedSchedule = [...schedules[selectedYear]];
         const startIndex = updatedSchedule.findIndex(row => row.time.startsWith(horaInicio));
         const rowspan = calculateRowspan(horaInicio, horaFin);
 
@@ -55,11 +70,14 @@ export default function Materias() {
             }
         }
 
-        updateSelectedSchedule(updatedSchedule);
+        setSchedules({
+            ...schedules,
+            [selectedYear]: updatedSchedule,
+        });
     };
 
     const handleDeleteMateria = (dia, horaInicio) => {
-        const updatedSchedule = [...getSelectedSchedule()];
+        const updatedSchedule = [...schedules[selectedYear]];
         const startIndex = updatedSchedule.findIndex(row => row.time.startsWith(horaInicio));
         const materiaToDelete = updatedSchedule[startIndex][dia];
 
@@ -71,25 +89,10 @@ export default function Materias() {
             updatedSchedule[i][dia] = "";
         }
 
-        updateSelectedSchedule(updatedSchedule);
-    };
-
-    const getSelectedSchedule = () => {
-        switch (selectedYear) {
-            case "1°Año": return schedule1;
-            case "2°Año": return schedule2;
-            case "3°Año": return schedule3;
-            default: return schedule1;
-        }
-    };
-
-    const updateSelectedSchedule = (updatedSchedule) => {
-        switch (selectedYear) {
-            case "1°Año": setSchedule1(updatedSchedule); break;
-            case "2°Año": setSchedule2(updatedSchedule); break;
-            case "3°Año": setSchedule3(updatedSchedule); break;
-            default: break;
-        }
+        setSchedules({
+            ...schedules,
+            [selectedYear]: updatedSchedule,
+        });
     };
 
     return (
@@ -146,7 +149,7 @@ export default function Materias() {
                 <button onClick={handleAddMateria} className="p-2 bg-blue-500 text-white m-2">Agregar Materia</button>
             </div>
 
-            {/* Tablas por año */}
+            {/* Tabla por año */}
             <div className="p-4">
                 <h2>{selectedYear}</h2>
                 <div className="flex justify-center text-center m-3">
@@ -162,7 +165,7 @@ export default function Materias() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getSelectedSchedule().map((row, index) => (
+                            {schedules[selectedYear].map((row, index) => (
                                 <tr key={index}>
                                     <td className="border-black border">{row.time}</td>
                                     {["lunes", "martes", "miercoles", "jueves", "viernes"].map((day) => (
