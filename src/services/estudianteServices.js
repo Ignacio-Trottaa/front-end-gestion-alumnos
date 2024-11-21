@@ -24,6 +24,9 @@ class EstudianteService {
     allMateriasByAlumno(id){
         return axios.get(ESTUDIANTE_BASE_REST_API_URL+"/alumno/"+id+"/materias");
     }
+    reintegrarAlumno(id){
+        return axios.put(ESTUDIANTE_BASE_REST_API_URL+"/alumno/reintegrar/"+id);
+    }
 }
 
 export default new EstudianteService();

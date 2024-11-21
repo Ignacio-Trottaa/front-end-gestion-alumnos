@@ -28,11 +28,11 @@ export default function FormEstudiante() {
         institucion:"",
         localidadInstitucion: "",
         otrosEstudios: "",
-        trabaja: "",
+        trabaja: null,
         actividad: "",
         horarioInicio: "",
         horarioFin: "",
-        obraSocial: "",
+        obraSocial: null,
         nombreObraSocial: "",
         estadoEstudiante: "true"
     });
@@ -59,11 +59,11 @@ export default function FormEstudiante() {
             institucion:"",
             localidadInstitucion: "",
             otrosEstudios: "",
-            trabaja: "false",
+            trabaja: false,
             actividad: "",
             horarioInicio: "",
             horarioFin: "",
-            obraSocial: "false",
+            obraSocial: false,
             nombreObraSocial: "",
             estadoEstudiante: "true"
         });
@@ -122,7 +122,7 @@ export default function FormEstudiante() {
                     [name]: value
                 })
             }
-        } else if (name === "horarioInicio" || name === "horarioFin") {
+        } else if (name === "horarioInicio" || name === "horarioFin" || name ==="institucion") {
             setFormData({
                 ...formData,
                 [name]: value
@@ -139,10 +139,10 @@ export default function FormEstudiante() {
                     [name]: value
                 })
             }
-        } else if (name === "trabaja" || name === "obraSocial" || name === "institucion") {
+        } else if (name === "trabaja" || name === "obraSocial") {
             setFormData({
                 ...formData,
-                [name]: value
+                [name]: value === "true" ? true : false
             })
         } else if (name === "correoElectronico") {
                 setFormData({
@@ -186,10 +186,6 @@ export default function FormEstudiante() {
                 [name]: value
             });
         }
-    }
-
-    function validarCampo(campo) {
-        return campo.trim() !== '';
     }
 
     function confirmarActualizacion(e){
@@ -295,12 +291,61 @@ export default function FormEstudiante() {
         );
       };
       const reintegro = (closeToast) => {
-        //reintegrarEstudiante()
+        reintegrarEstudiante()
         toast.success("Estudiante habilitado correctamente", { autoClose: 2000 });
         closeToast();
       };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+        // Validar cada campo
+        const newErrors = {};
+        Object.keys(formData).forEach(field => {
+            if (["departamento", "piso", "otrosEstudios"].includes(field)) {
+                // Si el campo es depto, piso o otros_estudios y está vacío, no lo consideres error
+                if (formData[field] !== "") {
+                    newErrors[field] = false; // No hay error en los campos depto, piso o otros_estudios
+                }
+            } else if (formData[field] !=="") {
+                newErrors[field] = false; // no encontró errores
+            } else {
+                newErrors[field] = true; // encontró errores
+            }
+        });
 
+        // Actualizar el estado de errores
+        setError(newErrors);
+        console.log(newErrors);
+        // Si no hay errores, puedes proceder con el envío del formulario
+        if (Object.values(newErrors).every(val => !val)) {
+            altaEstudiante(); // Llamamos a la función altaEstudiante aquí
+        }else{
+            console.log("Algunos campos requeridos no estan completos.");
+        }
+    };
+    //HACER UNA CONSULTA PARA AGARRAR LOS DATOS DEL ALUMNO ATRAVES DEL ID 
+    useEffect(() => {
+        if (id) {
+            EstudianteService.getEstudianteById(id).then((response) => {
+                const data = response.data;
+                console.log(data)
+                const formDataById = {
+                    ...data,
+                    trabaja: data.trabaja === "true" ? true : data.trabaja === "false" ? false : data.trabaja,
+                    obraSocial: data.obraSocial === "true" ? true : data.obraSocial === "false" ? false : data.obraSocial,
+                    fechaNacimiento: data.fechaNacimiento ? `${data.fechaNacimiento[0]}-${String(data.fechaNacimiento[1]).padStart(2, '0')}-${String(data.fechaNacimiento[2]).padStart(2, '0')}`: ""
+                };
+                setFormData(formDataById);
+                console.log(response.data)
+            }).catch(error => {
+                console.log(error)
+            })
+        } else {
+            vaciarFormulario();
+        }
+    }, [id]);
+    //llamada a la api
     const altaEstudiante = async () => {
         try {
             let response;
@@ -336,47 +381,6 @@ export default function FormEstudiante() {
             }
         }
     };
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
-        // Validar cada campo
-        const newErrors = {};
-        Object.keys(formData).forEach(field => {
-            if (["departamento", "piso", "otrosEstudios"].includes(field)) {
-                // Si el campo es depto, piso o otros_estudios y está vacío, no lo consideres error
-                if (formData[field] === "") {
-                    newErrors[field] = false; // No hay error
-                }
-            } else if (!validarCampo(formData[field])) {
-                newErrors[field] = true; // encontró errores
-            } else {
-                newErrors[field] = false; // no encontró errores
-            }
-        });
-
-        // Actualizar el estado de errores
-        setError(newErrors);
-        console.log(newErrors);
-        // Si no hay errores, puedes proceder con el envío del formulario
-        if (Object.values(newErrors).every(val => !val)) {
-            altaEstudiante(); // Llamamos a la función altaEstudiante aquí
-        }else{
-            console.log("Algunos campos requeridos no estan completos.");
-        }
-    };
-    //HACER UNA CONSULTA PARA AGARRAR LOS DATOS DEL ALUMNO ATRAVES DEL ID 
-    useEffect(() => {
-        if (id) {
-            EstudianteService.getEstudianteById(id).then((response) => {
-                setFormData(response.data);
-                console.log(response.data)
-            }).catch(error => {
-                console.log(error)
-            })
-        } else {
-            vaciarFormulario();
-        }
-    }, [id]);
     //llamadad a la api
     function modificarEstudiante(){
             EstudianteService.updateEstudiante(id, formData).then(response => {
@@ -408,6 +412,34 @@ export default function FormEstudiante() {
     //llamadad a la api
     function bajaEstudiante(){
         EstudianteService.deleteEstudiante(id, formData).then(response => {
+            console.log(response.data);
+            navigate("/admin/estudiantes");
+        }).catch(error => {
+            if (error.response) {
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
+            } else if (error.request) {
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
+            } else {
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
+            }
+        })
+    }
+    //llamada a la api
+    function reintegrarEstudiante() {
+        EstudianteService.reintegrarAlumno(id).then(response => {
             console.log(response.data);
             navigate("/admin/estudiantes");
         }).catch(error => {
@@ -832,7 +864,7 @@ export default function FormEstudiante() {
                         <input
                             type="radio"
                             id="siObraSocial"
-                            name="obra_social"
+                            name="obraSocial"
                             autoComplete="off"
                             className="mr-4"
                             value="true"
@@ -843,7 +875,7 @@ export default function FormEstudiante() {
                         <input
                             type="radio"
                             id="noObraSocial"
-                            name="obra_social"
+                            name="obraSocial"
                             autoComplete="off"
                             className=""
                             onChange={handleInput}
@@ -885,7 +917,7 @@ export default function FormEstudiante() {
                                         className="w-[50%] bg-red-600 text-white p-2 rounded-md m-2 cursor-pointer hover:bg-red-500" 
                                         onClick={(e)=>confirmarBaja(e)} 
                                         />
-                                    ):(
+                                    ) : (
                                         <input 
                                         type="submit" 
                                         value="Reintegrar Estudiante" 

@@ -1,19 +1,15 @@
-import { useState, useEffect } from "react";
-import React from "react";
+import React , { useState, useEffect } from "react";
 import EstudianteService from "../../../services/estudianteServices.js";
-import FilterBar from "./filtros.jsx";
 
 export default function Estudiantes() {
     const [estudiantes, setEstudiantes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filteredEstudiantes, setFilteredEstudiantes] = useState([]);
 
     useEffect(() => {
         EstudianteService.getAllEstudiantes().then(response => {
             setEstudiantes(response.data);
             console.log(response.data);
-            setFilteredEstudiantes(response.data); // Inicialmente mostrar todos
             setLoading(false);
         }).catch(error => {
             console.log(error);
@@ -22,52 +18,9 @@ export default function Estudiantes() {
         });
     }, []);
 
-    const applyFilters = (filters) => {
-        const filtered = estudiantes.filter(estudiante => {
-            return Object.entries(filters).every(([key, value]) => {
-                if (!value) return true; // Si el filtro está vacío, no lo aplicamos.
-    
-                const filterValue = value.trim().toLowerCase(); // Convertimos el filtro a minúsculas y eliminamos espacios
-                let estudianteValue = estudiante[key] ? estudiante[key].toString().trim().toLowerCase() : '';
-    
-                // Si estamos buscando por número, compararemos exactamente
-                if (key === 'numero') {
-                    return estudiante.id.toString() === filterValue; // Comparamos el ID (número de estudiante)
-                }
-    
-                // Comparación flexible para nombres (apellidos y nombres)
-                if (key === 'apellidosNombres') {
-                    const nombreCompleto = `${estudiante.apellido || ''} ${estudiante.nombre || ''}`.toLowerCase().trim();
-                    return nombreCompleto.includes(filterValue);
-                }
-    
-                // Comparación para estado (activo o inactivo)
-                if (key === 'estado') {
-                    return (estudiante.estado_estudiante === (filterValue === 'activo'));
-                }
-    
-                // Comparación para teléfono (permitiendo coincidencias parciales)
-                if (key === 'telefono') {
-                    return estudiante.tel_personal.toString().includes(filterValue); // Teléfono puede ser numérico, por lo que lo convertimos a string
-                }
-    
-                // Comparación para correo (permitiendo coincidencias parciales)
-                if (key === 'correo') {
-                    return estudiante.correo_electronico.toLowerCase().includes(filterValue);
-                }
-    
-                // Comparaciones para otros campos (curso, localidad, etc.)
-                return estudianteValue.includes(filterValue);
-            });
-        });
-        setFilteredEstudiantes(filtered);
-    };
-    
-    
-
     return (
         <div className="flex flex-col items-center justify-center p-5">
-            <FilterBar onApplyFilters={applyFilters} />
+            <h1 className="text-2xl">Listado de Estudiantes</h1>
             <table className="w-full shadow-md mt-2">
                 <thead className="text-center text-white bg-blue-500">
                     <tr>
@@ -88,8 +41,8 @@ export default function Estudiantes() {
                     <p className="text-red-500">{error}</p>
                 ) : (
                     <tbody className="text-center">
-                        {filteredEstudiantes.length > 0 ? (
-                            filteredEstudiantes.map((estudiante) => (
+                        {
+                            estudiantes.map((estudiante) => (
                                 <tr key={estudiante.id}>
                                     <td className={`text-white ${estudiante.estadoEstudiante === false ? "bg-blue-300" : "bg-blue-500"}`}>{estudiante.id}</td>
                                     <td className={`${estudiante.estadoEstudiante === false ? "bg-gray-400" : "bg-slate-200"}`}>
@@ -112,11 +65,7 @@ export default function Estudiantes() {
                                     </td>
                                 </tr>
                             ))
-                        ) : (
-                            <tr>
-                                <td colSpan="9" className="text-center">No hay estudiantes</td>
-                            </tr>
-                        )}
+                        }
                     </tbody>
                 )}
             </table>

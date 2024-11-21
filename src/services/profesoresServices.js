@@ -18,5 +18,8 @@ class ProfesorService {
     deleteProfesor(id) {
         return axios.put(PROFESOR_BASE_REST_API_URL+"/profesor/eliminar/"+id);
     }
+    reintegrarProfesor(id){
+        return axios.put(PROFESOR_BASE_REST_API_URL+"/profesor/reintegrar/"+id)
+    }
 }
 export default new ProfesorService();

@@ -169,45 +169,11 @@ export default function FormProfesor(){
         );
       };
       const reintegro = (closeToast) => {
-        //reintegrarEstudiante()
+        reintegrarProfesor()
         toast.success("Profesor habilitado correctamente", { autoClose: 2000 });
         closeToast();
       };
-    const altaProfesor = async () => {
-        try {
-            let response;
-                response = await ProfesorService.saveProfesor(formDataProfesor);
-            if (response.status === 200 || response.status === 201) {
-                console.log("Datos enviados exitosamente");
-                console.log(response.data); // Maneja la respuesta si es necesario
-                toast.success("¡Profesor creado exitosamente!");
-                vaciarFormulario()
-            } else {
-                console.error("Error al enviar los datos");
-            }
-        } catch (error) {
-            if (error.response) {
-                navigate("/Error",{state : {
-                       codigo: error.response.status,
-                       error: error.response.data.error,
-                       mensaje: error.message
-                }});
-            } else if (error.request) {
-                const requestErrorMsg = "No se recibió respuesta del servidor";
-                navigate("/Error", {state : {
-                    codigo : 500,
-                    error: "Error al intentar acceder al servidor",
-                    mensaje: requestErrorMsg
-                }});
-            } else {
-                navigate("/Error", {state : {
-                    codigo: 0,
-                    error: "Ocurrio un inconveniente",
-                    mensaje: ""
-                }})
-            }
-        }
-    };
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -244,7 +210,42 @@ export default function FormProfesor(){
             vaciarFormulario();
         }
     },[id]);
-    
+
+    const altaProfesor = async () => {
+        try {
+            let response;
+                response = await ProfesorService.saveProfesor(formDataProfesor);
+            if (response.status === 200 || response.status === 201) {
+                console.log("Datos enviados exitosamente");
+                console.log(response.data); // Maneja la respuesta si es necesario
+                toast.success("¡Profesor creado exitosamente!");
+                vaciarFormulario()
+            } else {
+                console.error("Error al enviar los datos");
+            }
+        } catch (error) {
+            if (error.response) {
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
+            } else if (error.request) {
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
+            } else {
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
+            }
+        }
+    };
     function modificarProfesor(){
             ProfesorService.updateProfesor(id,formDataProfesor).then(response =>{
                 console.log(response.data);
@@ -298,6 +299,33 @@ export default function FormProfesor(){
                     }})
                 }
             })
+    }
+    function reintegrarProfesor() {
+        ProfesorService.reintegrarProfesor(id).then(response =>{
+            console.log(response.data);
+            navigate("/admin/profesores");
+        }).catch(error=>{
+            if (error.response) {
+                navigate("/Error",{state : {
+                       codigo: error.response.status,
+                       error: error.response.data.error,
+                       mensaje: error.message
+                }});
+            } else if (error.request) {
+                const requestErrorMsg = "No se recibió respuesta del servidor";
+                navigate("/Error", {state : {
+                    codigo : 500,
+                    error: "Error al intentar acceder al servidor",
+                    mensaje: requestErrorMsg
+                }});
+            } else {
+                navigate("/Error", {state : {
+                    codigo: 0,
+                    error: "Ocurrio un inconveniente",
+                    mensaje: ""
+                }})
+            }
+        })
     }
 
     return(

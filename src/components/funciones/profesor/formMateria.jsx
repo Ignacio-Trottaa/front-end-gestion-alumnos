@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import materiasProfeServices from "../../../services/materiasProfeServices";
 import {toast} from 'react-toastify';
 
-export default function FormMateria({agregarMateria}) {
+export default function FormMateria() {
     const navigate = useNavigate();
+    const [userData,setUserData]=useState({
+        id:4,
+    })
     function generarCodigo() {
         const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let codigo = '';
@@ -40,13 +43,16 @@ export default function FormMateria({agregarMateria}) {
     const createMateria = async() =>{
         try {
             let response;
-                response = await materiasProfeServices.createMateria(formDataMateria);
+                response = await materiasProfeServices.createMateria(formDataMateria,userData.id);
 
             if (response.status === 200 || response.status === 201) {
                 console.log("Datos enviados exitosamente");
                 console.log(response.data); // Maneja la respuesta si es necesario
                 console.log(formDataMateria)
-                toast.success("¡Materia creada exitosamente!")
+                setTimeout(() => {
+                    toast.success("¡Materia creada exitosamente!")
+                }, 2000);
+                window.location.reload();
             } else {
                 console.error("Error al enviar los datos");
             }
@@ -83,7 +89,6 @@ export default function FormMateria({agregarMateria}) {
         setError(newErrors);
         if (Object.values(newErrors).every(val => !val)) {
             createMateria();// Crea la clase
-            agregarMateria(formDataMateria);  // Agrega la materia al sidebar
             setFormDataMateria({ nombre: "", descripcion: "", curso: "", codigo: generarCodigo()});  // Reinicia el formulario
         }
     };

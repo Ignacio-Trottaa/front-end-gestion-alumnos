@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
-import Materia from "../../layout/materia";
 import estudianteServices from "../../../services/estudianteServices";
 import inscripcionServices from "../../../services/inscripcionServices";
+import { toast } from "react-toastify";
 
-
-export default function ListaMaterias() {
+export default function ListaMaterias({onMateriaSeleccionada}) {
     const [Alumno,setIdAlumno] = useState({
         id: 2 //sesion del alumno
     })
     const [dataMateria,setDataMateria] = useState([]);
     
-    const [selectedMaterias, setSelectedMaterias] = useState(null)
+    const [selectedMaterias, setSelectedMaterias] = useState(null);
+
     const handleSelectMateria = (materia) => {
-        setSelectedMaterias(materia);
-        console.log(materia)
+        onMateriaSeleccionada(materia);
     };
 
     const desincribirse = (e,idMateria) =>{
         e.preventDefault();
             inscripcionServices.desinscribirse(Alumno.id, idMateria).then((response)=>{
-                location.reload()
+                setTimeout(() => {
+                    location.reload()    
+                }, 2500);
+                toast.success("¡Saliste de la clase correctamente!")
             }).catch(error=>{
                 console.log(error);
             })
@@ -36,10 +38,7 @@ export default function ListaMaterias() {
     return (
         <div className="pt-5">
             {
-                selectedMaterias ? (
-                    <Materia selectedMaterias={selectedMaterias}/>
-                ) : (
-                    dataMateria.map((materia) => (
+                dataMateria.map((materia) => (
                         <div 
                             className="bg-blue-400 p-4 m-2 rounded-md flex items-center justify-between" 
                             key={materia.id}
@@ -59,7 +58,7 @@ export default function ListaMaterias() {
                             </div>
                         </div>
                     ))
-                )
+                
             }
         </div>
     );

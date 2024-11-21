@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import SidebarProfesor from "../layout/SidebarProfesor";
 import FormMateria from "../funciones/profesor/formMateria";
 import IAsideBar from "./iaSideBar.jsx";
 import Materia from "../layout/materia.jsx";
+import MateriasProfeServices from "../../services/materiasProfeServices.js";
 
 export default function ProfesorDashboard() {
     const [viewIA,setViewIA] =useState(false);
@@ -11,10 +12,17 @@ export default function ProfesorDashboard() {
     const [materias, setMaterias] = useState([]);
     const [selectedMaterias,setSelectedMaterias] = useState(null);
     const [formMateria,setFormMateria] = useState(false);
-    // Función para agregar una nueva materia
-    const agregarMateria = (nuevaMateria) => {
-        setMaterias([...materias, nuevaMateria]);
-    };
+    const [userData,setUserData]=useState({
+        id:4,
+    })
+    useEffect(()=>{
+        MateriasProfeServices.getMateriasByProfesorId(userData.id).then(response=>{
+            setMaterias(response.data);
+            console.log(response.data);
+        }).catch(error=>{
+            console.log(error);
+        });
+    },[])
 
     // Función para seleccionar una materia
     const handleMateriaClick = (materia) => {
@@ -32,28 +40,26 @@ export default function ProfesorDashboard() {
             <SidebarProfesor materias={materias} onMateriaClick={handleMateriaClick} onFormMateria={onFormMateria}/>
             <div className="ml-64 w-full">
                 <div
-                    className="sticky inset-0 bg-cover bg-center opacity-50"
+                    className="fixed inset-0 bg-cover bg-center opacity-50"
                     style={{
-                        position: "absolute",
                         top: "50%",
                         left: "59%",
                         transform: "translate(-50%, -50%)",
                         height: "100%",
                         opacity: 0.6,
                         backgroundImage: "url('/LogoLeopoldoMarechal.png')",
-                        filter: "blur(4px)"
+                        backgroundAttachment: "fixed",
+                        filter: "blur(4px)",
                     }}
                 />
                 <div className="relative z-10">
                 {
                     formMateria ? (
-                        <FormMateria agregarMateria={ agregarMateria }/>
+                        <FormMateria/>
                     ) : selectedMaterias ? (
                         <Materia selectedMaterias={selectedMaterias} />
                     ) : (
-                        <div className="flex justify-center items-center">
-                            <p>Seleccione una materia o cree una nueva.</p>
-                        </div>
+                        <div className=""></div>
                       )
                 }
                 </div>

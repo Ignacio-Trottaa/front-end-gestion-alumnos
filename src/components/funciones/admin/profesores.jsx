@@ -19,7 +19,8 @@ export default function Profesores(){
     }, []);
 
     return(
-        <div className="p-5">
+        <div className="flex flex-col items-center justify-center p-5">
+            <h1 className="text-2xl">Listado de Profesores</h1>
             <table className="w-full shadow-md mt-2">
                 <thead className="text-center text-white bg-blue-500">
                     <tr>
