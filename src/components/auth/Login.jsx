@@ -1,36 +1,65 @@
-import React from 'react';
-
+import React, {useState} from 'react';
+import { Link , useNavigate} from 'react-router-dom';
 const Login = () => {
+  const navigate = useNavigate();
+  const [InicioData, setInicioData] = useState({
+    usuario: '',
+    password: ''
+  });
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setInicioData({
+      ...InicioData,
+      [name]: value
+    });
+  }
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    if(InicioData.usuario === "admin" && InicioData.password === "admin"){
+      navigate("/admin");
+    }
+    if(InicioData.usuario === "profesor" && InicioData.password === "profesor"){
+      navigate("/profesor")
+    }
+    if(InicioData.usuario === "estudiante" && InicioData.password === "estudiante"){
+      navigate("/estudiante")
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="bg-blue-600 p-4">
-        <h1 className="text-4xl text-white text-center">Campus Virtual</h1>
+        <h1 className="text-4xl text-white text-center">Campus Leopoldo Marechal</h1>
       </div>
       <div className="flex flex-1 justify-center items-center p-4">
-        <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl w-full">
+        <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl w-full h-3/4">
           <div className="md:w-1/2 p-8">
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Campus Login</h2>
-            <form className="space-y-6">
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Inicia Sesión</h2>
+            
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Usuario</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  required
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="usuario123"
+                <label className="block text-sm font-medium text-gray-700">Usuario</label>
+                <input  
+                type="text" 
+                name="usuario"
+                id="usuario"
+                autoComplete="off"
+                required
+                className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-600 focus:outline-none"
+                placeholder="Usuario"
+                onChange={handleInput}
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Contraseña</label>
+                <label className="block text-sm font-medium text-gray-700">Contraseña</label>
                 <input
                   type="password"
                   name="password"
                   id="password"
+                  autoComplete='off'
                   required
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-600 focus:outline-none"
                   placeholder="********"
+                  onChange={handleInput}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -49,7 +78,7 @@ const Login = () => {
             </form>
           </div>
           <div className="md:w-1/2 hidden md:block">
-            <img src="https://via.placeholder.com/600x800" alt="Campus" className="w-full h-full object-cover" />
+            <img src="Leopoldo.jpeg" alt="Campus" className="h-full object-cover" />
           </div>
         </div>
       </div>
